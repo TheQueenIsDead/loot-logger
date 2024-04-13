@@ -31,7 +31,10 @@ const SettingsContainer: React.FC = () => {
         console.log("Failed to get db: " + err.toString())
     })
 
-
+    // TODO: saving and loading do work, just not when enabled together.
+    //  Ie, comment out the load statement, and uncomment save. It saves to IDB.
+    //  Then comment out save and enable load, and it shows in the UI even post-refresh
+    //  There seems to be a race condition here, probably needs more validation, or an explicit save button.
     // Calculate the hourly wage when yearly salary or weekly hours is updated
     useEffect(() => {
         calculateHourlyWage();
