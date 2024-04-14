@@ -1,8 +1,9 @@
 import './SettingsContainer.css';
 
-import {IonAlert, IonInput, IonItem, IonLabel, IonList} from "@ionic/react";
-import {useEffect, useState} from "react";
+import {IonAlert, IonButton, IonIcon, IonInput, IonItem, IonLabel} from "@ionic/react";
+import React, {useEffect, useState} from "react";
 import {StorageService} from '../services/Storage';
+import {save} from "ionicons/icons";
 
 type Settings = {
     salary: number,
@@ -18,35 +19,28 @@ const SettingsContainer: React.FC = () => {
     const [hourlyWage, setHourlyWage] = useState<number | null>(0);
     const [showAlert, setShowAlert] = useState<boolean>(false);
 
-
-    StorageService.getInstance().then(store => {
-        console.log("Managed to get db:" + JSON.stringify(store));
-        store.getConfig().then(res => {
-            console.log(JSON.stringify(res))
-            setYearlySalary(res.salary)
-            setWeeklyHours(res.hours)
-            setHourlyWage(res.wage)
+    const loadSettings = async () => {
+        const store = await StorageService.getInstance()
+        const config = await store.getConfig()
+        const settings: Settings = {
+            hours: config.hours,
+            salary: config.salary,
+            wage: config.wage
+        }
+        return settings
+    }
+    const saveSettings = () => {
+        console.log("saving settings!!!")
+        StorageService.getInstance().then(store => {
+            store.setConfig(yearlySalary, weeklyHours, hourlyWage).then(()=>{
+                console.log("updated thing!!!")
+            }).catch(()=> {
+                console.log("failed to set config")
+            })
+        }).catch(() => {
+            console.log("failed to get store")
         })
-    }).catch(err => {
-        console.log("Failed to get db: " + err.toString())
-    })
-
-    // TODO: saving and loading do work, just not when enabled together.
-    //  Ie, comment out the load statement, and uncomment save. It saves to IDB.
-    //  Then comment out save and enable load, and it shows in the UI even post-refresh
-    //  There seems to be a race condition here, probably needs more validation, or an explicit save button.
-    // Calculate the hourly wage when yearly salary or weekly hours is updated
-    useEffect(() => {
-        calculateHourlyWage();
-    }, [yearlySalary, weeklyHours]);
-
-    // // Save settings to the ionic store when an hourly wage is successfully calculated
-    // useEffect(() => {
-    //     StorageService.getInstance().then(store => {
-    //         store.setConfig(yearlySalary, weeklyHours, hourlyWage)
-    //     })
-    // }, [hourlyWage]);
-
+    }
 
     const calculateHourlyWage = () => {
         if (yearlySalary > 0 && weeklyHours > 0) {
@@ -54,10 +48,22 @@ const SettingsContainer: React.FC = () => {
             if (hourlyWageResult !== hourlyWage) {
                 setHourlyWage(hourlyWageResult);
             }
-        } else {
-            setShowAlert(true);
         }
     };
+
+    // Load previous settings on load
+    useEffect(() => {
+        loadSettings().then(config => {
+            setYearlySalary(config.salary)
+            setWeeklyHours(config.hours)
+            setHourlyWage(config.wage)
+        })
+    }, []);
+
+    // Calculate the hourly wage when yearly salary or weekly hours is updated
+    useEffect(() => {
+        calculateHourlyWage();
+    }, [yearlySalary, weeklyHours]);
 
     return (
         <div className="container">
@@ -81,6 +87,10 @@ const SettingsContainer: React.FC = () => {
                 message="Please enter valid values for Yearly Salary and Weekly Hours."
                 buttons={['OK']}
             />
+
+            <IonButton onClick={saveSettings}>
+                <IonIcon icon={save}/> Save
+            </IonButton>
         </div>
     );
 };
