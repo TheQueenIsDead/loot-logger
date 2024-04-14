@@ -40,4 +40,12 @@ export class StorageService {
             this.database.set('wage', hourlyWage),
         ])
     }
+
+    public async getHistory() {
+        return [
+            {start: new Date().getUTCSeconds(), end: new Date().getUTCSeconds(), wage: 12.34},
+            {start: new Date().getUTCSeconds(), end: new Date().getUTCSeconds(), wage: 12.34},
+            {start: new Date().getUTCSeconds(), end: new Date().getUTCSeconds(), wage: 56.78},
+        ]
+    }
 }
