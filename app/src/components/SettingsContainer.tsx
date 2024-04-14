@@ -29,17 +29,9 @@ const SettingsContainer: React.FC = () => {
         }
         return settings
     }
-    const saveSettings = () => {
-        console.log("saving settings!!!")
-        StorageService.getInstance().then(store => {
-            store.setConfig(yearlySalary, weeklyHours, hourlyWage).then(()=>{
-                console.log("updated thing!!!")
-            }).catch(()=> {
-                console.log("failed to set config")
-            })
-        }).catch(() => {
-            console.log("failed to get store")
-        })
+    const saveSettings = async () => {
+        const store = await StorageService.getInstance()
+        await store.setConfig(yearlySalary, weeklyHours, hourlyWage)
     }
 
     const calculateHourlyWage = () => {
@@ -51,7 +43,7 @@ const SettingsContainer: React.FC = () => {
         }
     };
 
-    // Load previous settings on load
+    // Populate previous settings on load
     useEffect(() => {
         loadSettings().then(config => {
             setYearlySalary(config.salary)
