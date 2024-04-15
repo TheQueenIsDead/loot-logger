@@ -1,6 +1,6 @@
 import './SettingsContainer.css';
 
-import {IonAlert, IonButton, IonIcon, IonInput, IonItem, IonLabel} from "@ionic/react";
+import {IonAlert, IonButton, IonIcon, IonInput, IonItem, IonLabel, useIonToast} from "@ionic/react";
 import React, {useEffect, useState} from "react";
 import {StorageService} from '../services/Storage';
 import {save} from "ionicons/icons";
@@ -14,6 +14,8 @@ const SettingsContainer: React.FC = () => {
     const [hourlyWage, setHourlyWage] = useState<number | null>(0);
     const [showAlert, setShowAlert] = useState<boolean>(false);
 
+    const [present] = useIonToast();
+
     const loadSettings = async () => {
         const store = await StorageService.getInstance()
         const config = await store.getConfig()
@@ -26,7 +28,13 @@ const SettingsContainer: React.FC = () => {
     }
     const saveSettings = async () => {
         const store = await StorageService.getInstance()
-        await store.setConfig(yearlySalary, weeklyHours, hourlyWage)
+        store.setConfig(yearlySalary, weeklyHours, hourlyWage)
+        .then(() => {
+            present("Config Updated.", 3000)
+        })
+        .catch(() => {
+            present("Failed to save configuration!", 3000)
+        })
     }
 
     const calculateHourlyWage = () => {
