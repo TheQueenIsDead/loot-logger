@@ -1,9 +1,10 @@
 import './LogContainer.css';
 import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
 import {useEffect, useState} from "react";
+import {StorageService} from "../services/Storage";
 
 const LogContainer: React.FC = () => {
-    const [startTime, setStartTime] = useState<number | null>(null);
+    const [startTime, setStartTime] = useState<number>(0);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
     const wage = 12.34
@@ -41,7 +42,16 @@ const LogContainer: React.FC = () => {
         }
     };
 
-    const handleReset = () => {
+    const handleReset = async () => {
+
+        const store = await StorageService.getInstance()
+        const config = await store.getConfig()
+        await store.pushHistory({
+            start: startTime,
+            end: Date.now(),
+            wage: config.wage,
+        })
+
         setStartTime(null);
         setElapsedTime(0);
         if (timerId) {
