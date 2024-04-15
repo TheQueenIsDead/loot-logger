@@ -51,7 +51,6 @@ const HistoryContainer: React.FC = () => {
                 {/* Map through the items array and render each item */}
                 {history.map((item, index) => (
                 <IonItem key={index}>
-                {/*<IonItem>*/}
                     <IonLabel>{item.start}</IonLabel>
                     <IonLabel>{item.end}</IonLabel>
                     <IonLabel>{item.wage}</IonLabel>
