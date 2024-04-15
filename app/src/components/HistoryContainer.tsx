@@ -22,6 +22,18 @@ const HistoryContainer: React.FC = () => {
         setHistory(history)
     }
 
+    // TODO: Remove the ability to add miscellaneous history used in testing
+    const addHistory = () => {
+        setHistory([
+            ...history,
+            {
+                start: 1,
+                end: 1,
+                wage: 1,
+            }
+        ])
+    }
+
     // Populate previous settings on load
     useEffect(() => { loadHistory() }, []);
 
@@ -34,14 +46,19 @@ const HistoryContainer: React.FC = () => {
                     <IonLabel>Wage</IonLabel>
                 </IonItem>
                 {/* Map through the items array and render each item */}
-                {history.map(item => (
-                <IonItem key={item.start}>
+                {history.map((item, index) => (
+                <IonItem key={index}>
+                {/*<IonItem>*/}
                     <IonLabel>{item.start}</IonLabel>
                     <IonLabel>{item.end}</IonLabel>
                     <IonLabel>{item.wage}</IonLabel>
                 </IonItem>
                 ))}
             </IonList>
+            {/*TODO: Remove the ability to add miscellaneous history used in testing*/}
+            <IonButton onClick={addHistory}>
+                New
+            </IonButton>
         </div>
     );
 };
