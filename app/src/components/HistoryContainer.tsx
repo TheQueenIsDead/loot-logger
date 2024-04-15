@@ -40,6 +40,11 @@ const HistoryContainer: React.FC = () => {
     // Populate previous settings on load
     useEffect(() => { loadHistory() }, []);
 
+    const formatTime = (time: number): string => {
+        const date = new Date(time)
+        return date.toLocaleTimeString()
+    }
+
     return (
         <div className="container">
             <IonList>
@@ -53,8 +58,8 @@ const HistoryContainer: React.FC = () => {
                 {/* Map through the items array and render each item */}
                 {history.map((item, index) => (
                 <IonItem key={index}>
-                    <IonLabel>{item.start}</IonLabel>
-                    <IonLabel>{item.end}</IonLabel>
+                    <IonLabel>{formatTime(item.start)}</IonLabel>
+                    <IonLabel>{formatTime(item.end)}</IonLabel>
                     <IonLabel>{(item.end - item.start) / 1000}</IonLabel>
                     <IonLabel>{item.wage}</IonLabel>
                     <IonLabel>${(((item.end - item.start) / 1000) * (item.wage / 60 / 60)).toFixed(2)}</IonLabel>
