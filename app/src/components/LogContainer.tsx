@@ -10,7 +10,7 @@ const LogContainer: React.FC = () => {
     const wage = 12.34
 
     useEffect(() => {
-        if (startTime !== null) {
+        if (startTime !== 0) {
             const id = setInterval(() => {
                 setElapsedTime(Date.now() - startTime);
             }, 1); // Update every millisecond
@@ -70,7 +70,7 @@ const LogContainer: React.FC = () => {
                 <div style={{ textAlign: 'center' }}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
                     <h2>${moneyEarned(elapsedTime)} earned</h2>
-                    {startTime === null ? (
+                    {startTime === 0 ? (
                         <IonButton onClick={handleStart}>Start</IonButton>
                     ) : (
                         <IonButton onClick={handleStop}>Stop</IonButton>
