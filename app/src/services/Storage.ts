@@ -42,10 +42,12 @@ export class StorageService {
     }
 
     public async getHistory() {
-        return [
-            {start: new Date().getUTCSeconds(), end: new Date().getUTCSeconds(), wage: 12.34},
-            {start: new Date().getUTCSeconds(), end: new Date().getUTCSeconds(), wage: 12.34},
-            {start: new Date().getUTCSeconds(), end: new Date().getUTCSeconds(), wage: 56.78},
-        ]
+        const value = await this.database.get('history')
+        return JSON.parse(value)
+    }
+
+    public async setHistory(history: HistoryLog[]) {
+        const value = JSON.stringify(history)
+        return this.database.set('history', value)
     }
 }

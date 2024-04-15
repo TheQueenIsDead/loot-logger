@@ -10,16 +10,21 @@ import {save} from "ionicons/icons";
 
 const HistoryContainer: React.FC = () => {
 
-    const [history, setHistory] = useState<History[]>([])
+    const [history, setHistory] = useState<HistoryLog[]>([])
 
     const loadHistory = async () => {
         const store = await StorageService.getInstance()
         const history = await store.getHistory()
-        setHistory(history)
+
+        if (history === null) {
+            setHistory([])
+        } else {
+            setHistory(history)
+        }
     }
 
     // TODO: Remove the ability to add miscellaneous history used in testing
-    const addHistory = () => {
+    const addHistory = async () => {
         setHistory([
             ...history,
             {
@@ -28,6 +33,8 @@ const HistoryContainer: React.FC = () => {
                 wage: 1,
             }
         ])
+        const store = await StorageService.getInstance()
+        store.setHistory(history)
     }
 
     // Populate previous settings on load
