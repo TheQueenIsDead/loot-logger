@@ -52,7 +52,7 @@ const LogContainer: React.FC = () => {
             wage: config.wage,
         })
 
-        setStartTime(null);
+        setStartTime(0);
         setElapsedTime(0);
         if (timerId) {
             clearInterval(timerId);
