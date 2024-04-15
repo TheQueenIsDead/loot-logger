@@ -50,4 +50,10 @@ export class StorageService {
         const value = JSON.stringify(history)
         return this.database.set('history', value)
     }
+
+    public async pushHistory(history: HistoryLog) {
+        const value = await this.getHistory()
+        value.push(history)
+        await this.setHistory(value)
+    }
 }
