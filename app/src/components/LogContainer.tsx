@@ -44,13 +44,14 @@ const LogContainer: React.FC = () => {
 
     const handleReset = async () => {
 
-        const store = await StorageService.getInstance()
-        const config = await store.getConfig()
-        await store.pushHistory({
-            start: startTime,
-            end: Date.now(),
-            wage: config.wage,
-        })
+        // // TODO: Push start, stop, and given wage to history
+        // const store = await StorageService.getInstance()
+        // const config = await store.getConfig()
+        // await store.pushHistory({
+        //     start: startTime,
+        //     end: Date.now(),
+        //     wage: config.wage,
+        // })
 
         setStartTime(0);
         setElapsedTime(0);
