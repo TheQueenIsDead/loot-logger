@@ -1,5 +1,5 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import LogContainer from '../components/LogContainer';
 import './Log.css';
 
 const Log: React.FC = () => {
@@ -16,7 +16,7 @@ const Log: React.FC = () => {
             <IonTitle size="large">Log</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Log" />
+        <LogContainer />
       </IonContent>
     </IonPage>
   );

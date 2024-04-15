@@ -1,7 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './History.css';
 import HistoryContainer from "../components/HistoryContainer";
+import './History.css';
 
 const History: React.FC = () => {
   return (
