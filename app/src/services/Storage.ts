@@ -40,4 +40,14 @@ export class StorageService {
             this.database.set('wage', hourlyWage),
         ])
     }
+
+    public async getHistory() {
+        const value = await this.database.get('history')
+        return JSON.parse(value)
+    }
+
+    public async setHistory(history: HistoryLog[]) {
+        const value = JSON.stringify(history)
+        return this.database.set('history', value)
+    }
 }

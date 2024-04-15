@@ -5,11 +5,6 @@ import React, {useEffect, useState} from "react";
 import {StorageService} from '../services/Storage';
 import {save} from "ionicons/icons";
 
-type Settings = {
-    salary: number,
-    hours: number,
-    wage: number | null,
-}
 
 
 const SettingsContainer: React.FC = () => {
