@@ -46,14 +46,18 @@ const HistoryContainer: React.FC = () => {
                 <IonItem>
                     <IonLabel>Start</IonLabel>
                     <IonLabel>End</IonLabel>
+                    <IonLabel>Duration</IonLabel>
                     <IonLabel>Wage</IonLabel>
+                    <IonLabel>Earned</IonLabel>
                 </IonItem>
                 {/* Map through the items array and render each item */}
                 {history.map((item, index) => (
                 <IonItem key={index}>
                     <IonLabel>{item.start}</IonLabel>
                     <IonLabel>{item.end}</IonLabel>
+                    <IonLabel>{(item.end - item.start) / 1000}</IonLabel>
                     <IonLabel>{item.wage}</IonLabel>
+                    <IonLabel>${(((item.end - item.start) / 1000) * (item.wage / 60 / 60)).toFixed(2)}</IonLabel>
                 </IonItem>
                 ))}
             </IonList>

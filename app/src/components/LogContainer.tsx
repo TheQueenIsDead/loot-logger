@@ -28,8 +28,9 @@ const LogContainer: React.FC = () => {
     };
 
     const moneyEarned = (time: number): string => {
+        const seconds = Math.floor(time / 1000);
         const moneyPerSecond = wage / 60 / 60
-        return (Math.round(time/1000 * moneyPerSecond * 100) / 100).toFixed(2)
+        return (Math.round(seconds * moneyPerSecond * 100) / 100).toFixed(2)
     }
 
     const handleStart = () => {
@@ -42,16 +43,17 @@ const LogContainer: React.FC = () => {
         }
     };
 
+    // TODO: Move state up to the parent app so that the history page updates when the reset button is pushed.
     const handleReset = async () => {
 
-        // // TODO: Push start, stop, and given wage to history
-        // const store = await StorageService.getInstance()
-        // const config = await store.getConfig()
-        // await store.pushHistory({
-        //     start: startTime,
-        //     end: Date.now(),
-        //     wage: config.wage,
-        // })
+        // TODO: Push start, stop, and given wage to history
+        const store = await StorageService.getInstance()
+        const config = await store.getConfig()
+        await store.pushHistory({
+            start: startTime,
+            end: Date.now(),
+            wage: config.wage,
+        })
 
         setStartTime(0);
         setElapsedTime(0);
