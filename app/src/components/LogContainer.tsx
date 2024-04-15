@@ -70,7 +70,7 @@ const LogContainer: React.FC = () => {
             <IonContent className="ion-padding">
                 <div style={{ textAlign: 'center' }}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
-                    <h2>${moneyEarned(elapsedTime)} earned</h2>
+                    <h2>${moneyEarned(elapsedTime)} earned @ ${wage}/ph</h2>
                     {startTime === 0 ? (
                         <IonButton onClick={handleStart}>Start</IonButton>
                     ) : (
