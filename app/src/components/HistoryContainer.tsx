@@ -5,11 +5,7 @@ import React, {useEffect, useState} from "react";
 import {StorageService} from '../services/Storage';
 import {save} from "ionicons/icons";
 
-type History = {
-    start: number,
-    end: number,
-    wage: number,
-}
+
 
 
 const HistoryContainer: React.FC = () => {
