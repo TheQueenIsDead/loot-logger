@@ -63,27 +63,20 @@ const LogContainer: React.FC = () => {
     };
 
     return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Timer App</IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent className="ion-padding">
-                <div style={{ textAlign: 'center' }}>
-                    <h2>{formatTime(elapsedTime)} seconds</h2>
-                    <h2>${moneyEarned(elapsedTime)} earned @ ${wage}/ph</h2>
-                    {startTime === 0 ? (
-                        <IonButton onClick={handleStart}>Start</IonButton>
-                    ) : (
-                        <IonButton onClick={handleStop}>Stop</IonButton>
-                    )}
-                    <IonButton onClick={handleReset} disabled={startTime === null}>
-                        Reset
-                    </IonButton>
-                </div>
-            </IonContent>
-        </IonPage>
+        <div className="container">
+            <div style={{ textAlign: 'center' }}>
+                <h2>{formatTime(elapsedTime)} seconds</h2>
+                <h2>${moneyEarned(elapsedTime)} earned @ ${wage}/ph</h2>
+                {startTime === 0 ? (
+                    <IonButton onClick={handleStart}>Start</IonButton>
+                ) : (
+                    <IonButton onClick={handleStop}>Stop</IonButton>
+                )}
+                <IonButton onClick={handleReset} disabled={startTime === null}>
+                    Reset
+                </IonButton>
+            </div>
+        </div>
     );
 };
 
