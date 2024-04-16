@@ -1,9 +1,10 @@
 import './SettingsContainer.css';
 
 import {IonAlert, IonButton, IonIcon, IonInput, IonItem, IonLabel, useIonToast} from "@ionic/react";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {StorageService} from '../services/Storage';
 import {save} from "ionicons/icons";
+import {WageContext} from "../contexts/WageContext";
 
 
 
@@ -11,8 +12,10 @@ const SettingsContainer: React.FC = () => {
 
     const [yearlySalary, setYearlySalary] = useState<number>(0);
     const [weeklyHours, setWeeklyHours] = useState<number>(0);
-    const [hourlyWage, setHourlyWage] = useState<number | null>(0);
+    // const [hourlyWage, setHourlyWage] = useState<number | null>(0);
     const [showAlert, setShowAlert] = useState<boolean>(false);
+
+    const hourlyWage = useContext(WageContext);
 
     const [present] = useIonToast();
 

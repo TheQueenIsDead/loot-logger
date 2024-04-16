@@ -14,6 +14,7 @@ import { stopwatch, list, settings } from 'ionicons/icons';
 import Log from './pages/Log';
 import History from './pages/History';
 import Settings from './pages/Settings';
+import {WageContext} from "./contexts/WageContext";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -33,12 +34,18 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import {SettingsContext} from "./contexts/SettingsContext";
+import {StorageService} from "./services/Storage";
 
 setupIonicReact();
 
 const App: React.FC = () => (
+    // <WageContext.Provider value={level}>
+    //   {children}
+    // </WageContext.Provider>
 
 
+  <SettingsContext.Provider value={() => {}}>
   <IonApp>
     <IonReactRouter>
       <IonTabs>
@@ -73,6 +80,7 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
+  </SettingsContext.Provider>
 );
 
 export default App;
