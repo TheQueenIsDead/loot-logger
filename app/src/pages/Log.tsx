@@ -11,6 +11,7 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
 
     const [startTime, setStartTime] = useState<number>(0);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
+    const [moneyEarned, setMoneyEarned] = useState<number>(0);
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
 
@@ -18,6 +19,7 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
         if (startTime !== 0) {
             const id = setInterval(() => {
                 setElapsedTime(Date.now() - startTime);
+                setMoneyEarned(calculateMoneyEarned(Date.now() - startTime))
             }, 1); // Update every millisecond
 
             setTimerId(id);
@@ -32,10 +34,11 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
         return `${seconds}.${milliseconds.toString().padStart(2, '0')}`;
     };
 
-    const moneyEarned = (time: number): string => {
+    const calculateMoneyEarned = (time: number): number => {
         const seconds = Math.floor(time / 1000);
         const moneyPerSecond = wage / 60 / 60
-        return (Math.round(seconds * moneyPerSecond * 100) / 100).toFixed(2)
+        // return Math.round(seconds * moneyPerSecond * 100) / 100
+        return seconds * moneyPerSecond
     }
 
     const handleStart = () => {
@@ -57,6 +60,7 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
 
         setStartTime(0);
         setElapsedTime(0);
+        setMoneyEarned(0)
         if (timerId) {
             clearInterval(timerId);
         }
@@ -82,7 +86,7 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
                 <div style={{textAlign: 'center'}}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
                     {/*TODO: This value only updates per second, so the final value once stopped is different to the history log */}
-                    <h2>${moneyEarned(elapsedTime)} earned @ ${wage.toFixed(2)}/ph</h2>
+                    <h2>${moneyEarned.toFixed(2)} earned @ ${wage.toFixed(2)}/ph</h2>
                     {startTime === 0 ? (
                         <IonButton onClick={handleStart}>Start</IonButton>
                     ) : (
