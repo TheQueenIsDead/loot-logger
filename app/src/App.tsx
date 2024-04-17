@@ -36,7 +36,6 @@ import './theme/variables.css';
 import { DefaultAppContextData} from "./AppContext";
 import {useEffect, useState} from "react";
 import {StorageService} from "./Storage";
-import history from "./pages/History";
 
 setupIonicReact();
 
@@ -53,19 +52,20 @@ const App: React.FC = () => {
     setHistory([...history, log])
 
     StorageService.getInstance()
-      .then(store => {
-        store.pushHistory(log)
-            .then(() => {
-              console.log("Pushed history record: " + JSON.stringify(log))
-            })
-            .catch(err => {
-              console.log("Failed to push history record: " + err)
-            })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(store => {
+          store.pushHistory(log)
+              .then(() => {
+                console.log("Pushed history record: " + JSON.stringify(log))
+              })
+              .catch(err => {
+                console.log("Failed to push history record: " + err)
+              })
+        })
+        .catch(err => {
+          console.log(err)
+        })
   }
+
 
   useEffect(() => {
     StorageService.getInstance().then(service => {

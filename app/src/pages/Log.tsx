@@ -51,8 +51,8 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
     // TODO: Move state up to the parent app so that the history page updates when the reset button is pushed.
     const handleReset = async () => {
         saveHistory({
-            end: startTime,
-            start: Date.now(),
+            start: startTime,
+            end: startTime + elapsedTime,
             wage: wage
         })
 
