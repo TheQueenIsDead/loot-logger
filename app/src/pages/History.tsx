@@ -9,28 +9,13 @@ import {
     IonTitle,
     IonToolbar
 } from '@ionic/react';
-import React, {useEffect, useState} from "react";
-import {StorageService} from "../Storage";
+import React from "react";
 
 interface HistoryProps {
     history: HistoryLog[]
     saveHistory: (history: HistoryLog) => void
 }
 const History: React.FC<HistoryProps> = ({history, saveHistory}) => {
-
-
-    // const [history, setHistory] = useState<HistoryLog[]>([])
-
-    // const loadHistory = async () => {
-    //     const store = await StorageService.getInstance()
-    //     const history = await store.getHistory()
-    //
-    //     if (history === null) {
-    //         setHistory([])
-    //     } else {
-    //         setHistory(history)
-    //     }
-    // }
 
     // TODO: Remove the ability to add miscellaneous history used in testing
     const addHistory = async () => {
@@ -39,17 +24,8 @@ const History: React.FC<HistoryProps> = ({history, saveHistory}) => {
             end: 1,
             wage: 69,
         })
-        // const store = await StorageService.getInstance()
-        // store.setHistory(history).then(() => {
-        //     console.log("OK!")
-        // })
-        // .catch(() => {
-        //     console.log("OOOPSIES")
-        // })
     }
 
-    // Populate previous settings on load
-    // useEffect(() => { loadHistory() }, []);
 
     const formatTime = (time: number): string => {
         const date = new Date(time)

@@ -33,7 +33,6 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { DefaultAppContextData} from "./AppContext";
 import {useEffect, useState} from "react";
 import {StorageService} from "./Storage";
 
@@ -42,12 +41,16 @@ setupIonicReact();
 
 const App: React.FC = () => {
 
-  const [config, setConfig] = useState<Config>(DefaultAppContextData.settings)
-  const [history, setHistory] = useState<HistoryLog[]>(DefaultAppContextData.history)
+  const [config, setConfig] = useState<Config>( {
+    salary: 0,
+    hours: 0,
+    wage: 0
+  })
+  const [history, setHistory] = useState<HistoryLog[]>([])
 
 
-  // Save history is a hook that can be passed to components to that they can push new history logs.
-  // It will update the reactive history state as well as persist to the ionic storage.
+  // Save history is a hook that can be passed to components so that they can push new history logs.
+  // It will update the local react state as well as persist to the ionic storage.
   const saveHistory = (log: HistoryLog) => {
     setHistory([...history, log])
 
@@ -66,17 +69,40 @@ const App: React.FC = () => {
         })
   }
 
+  // Save config is a hook that can be passed to components so that they can update the config.
+  // It will update the local react state as well as persist to ionic storage.
+  const saveConfig = (config: Config) => {
+    setConfig(config)
 
+    StorageService.getInstance()
+    .then(store => {
+      store.setConfig(config)
+          .then(() => {
+            console.log("Successfully persisted config: " + JSON.stringify(config))
+          })
+          .catch(err => {
+            console.log("Failed to persist config: " + err)
+          })
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+
+  // Retrieve stored config and history on load
   useEffect(() => {
     StorageService.getInstance().then(service => {
       service.getConfig()
       .then(config => {
-        console.log("Updating config")
-        setConfig(config)
+        if (config !== null) {
+          console.log("Updating config")
+          setConfig(config)
+        }
       })
       service.getHistory().then(history => {
-        console.log("Updating history")
         if (history !== null) {
+          console.log("Updating history")
           setHistory(history)
         }
       })
@@ -85,6 +111,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     console.log("UPDATING ROOT CONFIG" + JSON.stringify(config))
+
   }, [config]);
 
   return (
@@ -99,7 +126,7 @@ const App: React.FC = () => {
             <History history={history} saveHistory={saveHistory}/>
           </Route>
           <Route path="/settings">
-            <Settings config={config} setConfig={setConfig}/>
+            <Settings config={config} saveConfig={saveConfig}/>
           </Route>
           <Route exact path="/">
             <Redirect to="/log" />

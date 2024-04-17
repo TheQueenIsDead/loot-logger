@@ -48,7 +48,6 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
         }
     };
 
-    // TODO: Move state up to the parent app so that the history page updates when the reset button is pushed.
     const handleReset = async () => {
         saveHistory({
             start: startTime,
@@ -82,7 +81,7 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
             <div className="container">
                 <div style={{textAlign: 'center'}}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
-                    {/*<h2>${moneyEarned(elapsedTime)} earned @ ${wage}/ph</h2>*/}
+                    {/*TODO: This value only updates per second, so the final value once stopped is different to the history log */}
                     <h2>${moneyEarned(elapsedTime)} earned @ ${wage.toFixed(2)}/ph</h2>
                     {startTime === 0 ? (
                         <IonButton onClick={handleStart}>Start</IonButton>

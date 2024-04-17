@@ -14,10 +14,10 @@ import {save} from "ionicons/icons";
 
 interface SettingsProps {
     config: Config
-    setConfig: (config: Config) => void
+    saveConfig: (config: Config) => void
 }
 
-const Settings: React.FC<SettingsProps> = ({config, setConfig}) => {
+const Settings: React.FC<SettingsProps> = ({config, saveConfig}) => {
 
     // TODO: Remove if not needed
     // const [present] = useIonToast();
@@ -90,7 +90,7 @@ const Settings: React.FC<SettingsProps> = ({config, setConfig}) => {
 
                 <IonButton onClick={() => {
                     console.log(state)
-                    setConfig(state)
+                    saveConfig(state)
                 }}>
                     <IonIcon icon={save}/> Save
                 </IonButton>
