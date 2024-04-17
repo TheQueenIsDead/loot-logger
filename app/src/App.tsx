@@ -14,7 +14,6 @@ import { stopwatch, list, settings } from 'ionicons/icons';
 import Log from './pages/Log';
 import History from './pages/History';
 import Settings from './pages/Settings';
-import {WageContext} from "./contexts/WageContext";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,30 +33,49 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import {SettingsContext} from "./contexts/SettingsContext";
-import {StorageService} from "./services/Storage";
+import { DefaultAppContextData} from "./AppContext";
+import {useEffect, useState} from "react";
+import {StorageService} from "./Storage";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-    // <WageContext.Provider value={level}>
-    //   {children}
-    // </WageContext.Provider>
 
+const App: React.FC = () => {
 
-  <SettingsContext.Provider value={() => {}}>
+  const [config, setConfig] = useState(DefaultAppContextData.settings)
+  const [history, setHistory] = useState(DefaultAppContextData.history)
+
+  useEffect(() => {
+    StorageService.getInstance().then(service => {
+      service.getConfig()
+      .then(config => {
+        console.log("Updating config")
+        setConfig(config)
+      })
+      service.getHistory().then(history => {
+        console.log("Updating history")
+        setHistory(history)
+      })
+    })
+  }, []);
+
+  useEffect(() => {
+    console.log("UPDATING ROOT CONFIG" + JSON.stringify(config))
+  }, [config]);
+
+  return (
   <IonApp>
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/log">
-            <Log />
+            <Log config={config} history={history} setHistory={setHistory} />
           </Route>
           <Route exact path="/history">
-            <History />
+            <History history={history} setHistory={setHistory}/>
           </Route>
           <Route path="/settings">
-            <Settings />
+            <Settings config={config} setConfig={setConfig}/>
           </Route>
           <Route exact path="/">
             <Redirect to="/log" />
@@ -80,7 +98,7 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
-  </SettingsContext.Provider>
-);
+  )
+};
 
 export default App;

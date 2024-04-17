@@ -1,25 +1,110 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import LogContainer from '../components/LogContainer';
-import './Log.css';
+import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {useEffect, useState} from "react";
+import {StorageService} from "../Storage";
+import Settings from "./Settings";
 
-const Log: React.FC = () => {
-  return (
+
+interface LogProps {
+    config: Config
+    history: HistoryLog[]
+    setHistory: (history: HistoryLog[]) => void
+}
+
+const Log: React.FC<LogProps> = ({config, history}) => {
+
+    const [startTime, setStartTime] = useState<number>(0);
+    const [elapsedTime, setElapsedTime] = useState<number>(0);
+    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+    const [wage, setWage] = useState<number>(config.wage);
+
+    useEffect(() => {
+        if (startTime !== 0) {
+            const id = setInterval(() => {
+                setElapsedTime(Date.now() - startTime);
+            }, 1); // Update every millisecond
+
+            setTimerId(id);
+
+            return () => clearInterval(id);
+        }
+    }, [startTime]);
+
+    const formatTime = (time: number): string => {
+        const seconds = Math.floor(time / 1000);
+        const milliseconds = Math.floor((time % 1000) / 10); // Extract milliseconds and round
+        return `${seconds}.${milliseconds.toString().padStart(2, '0')}`;
+    };
+
+    const moneyEarned = (time: number): string => {
+        const seconds = Math.floor(time / 1000);
+        const moneyPerSecond = wage / 60 / 60
+        return (Math.round(seconds * moneyPerSecond * 100) / 100).toFixed(2)
+    }
+
+    const handleStart = () => {
+        setStartTime(Date.now());
+    };
+
+    const handleStop = () => {
+        if (timerId) {
+            clearInterval(timerId);
+        }
+    };
+
+    // TODO: Move state up to the parent app so that the history page updates when the reset button is pushed.
+    const handleReset = async () => {
+
+        // TODO: Push start, stop, and given wage to history
+        const store = await StorageService.getInstance()
+        const config = await store.getConfig()
+        await store.pushHistory({
+            start: startTime,
+            end: Date.now(),
+            wage: config.wage,
+        })
+
+        setStartTime(0);
+        setElapsedTime(0);
+        if (timerId) {
+            clearInterval(timerId);
+        }
+    };
+
+
+
+    return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Log</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Log</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <LogContainer />
-      </IonContent>
+        <IonContent fullscreen>
+            <IonHeader collapse="condense">
+                <IonToolbar>
+                    <IonTitle size="large">Log</IonTitle>
+                </IonToolbar>
+            </IonHeader>
+
+            <div className="container">
+                <div style={{textAlign: 'center'}}>
+                    <h2>{formatTime(elapsedTime)} seconds</h2>
+                    <h2>${moneyEarned(elapsedTime)} earned @ ${wage}/ph</h2>
+                    {startTime === 0 ? (
+                        <IonButton onClick={handleStart}>Start</IonButton>
+                    ) : (
+                        <IonButton onClick={handleStop}>Stop</IonButton>
+                    )}
+                    <IonButton onClick={handleReset} disabled={startTime === null}>
+                        Reset
+                    </IonButton>
+                </div>
+            </div>
+
+
+        </IonContent>
     </IonPage>
-  );
+    );
 };
 
 export default Log;
