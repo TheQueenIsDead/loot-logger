@@ -33,11 +33,11 @@ export class StorageService {
         }
     }
 
-    public async setConfig(yearlySalary: number, weeklyHours: number, hourlyWage: number | null): Promise<[any, any, any]> {
+    public async setConfig(config: Config): Promise<[any, any, any]> {
         return Promise.all([
-            this.database.set('salary', yearlySalary),
-            this.database.set('hours', weeklyHours),
-            this.database.set('wage', hourlyWage),
+            this.database.set('salary', config.salary),
+            this.database.set('hours', config.hours),
+            this.database.set('wage', config.wage),
         ])
     }
 
