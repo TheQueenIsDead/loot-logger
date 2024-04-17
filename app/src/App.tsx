@@ -36,14 +36,36 @@ import './theme/variables.css';
 import { DefaultAppContextData} from "./AppContext";
 import {useEffect, useState} from "react";
 import {StorageService} from "./Storage";
+import history from "./pages/History";
 
 setupIonicReact();
 
 
 const App: React.FC = () => {
 
-  const [config, setConfig] = useState(DefaultAppContextData.settings)
-  const [history, setHistory] = useState(DefaultAppContextData.history)
+  const [config, setConfig] = useState<Config>(DefaultAppContextData.settings)
+  const [history, setHistory] = useState<HistoryLog[]>(DefaultAppContextData.history)
+
+
+  // Save history is a hook that can be passed to components to that they can push new history logs.
+  // It will update the reactive history state as well as persist to the ionic storage.
+  const saveHistory = (log: HistoryLog) => {
+    setHistory([...history, log])
+
+    StorageService.getInstance()
+      .then(store => {
+        store.pushHistory(log)
+            .then(() => {
+              console.log("Pushed history record: " + JSON.stringify(log))
+            })
+            .catch(err => {
+              console.log("Failed to push history record: " + err)
+            })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
   useEffect(() => {
     StorageService.getInstance().then(service => {
@@ -54,7 +76,9 @@ const App: React.FC = () => {
       })
       service.getHistory().then(history => {
         console.log("Updating history")
-        setHistory(history)
+        if (history !== null) {
+          setHistory(history)
+        }
       })
     })
   }, []);
@@ -69,10 +93,10 @@ const App: React.FC = () => {
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/log">
-            <Log wage={config.wage} history={history} setHistory={setHistory} />
+            <Log wage={config.wage} saveHistory={saveHistory} />
           </Route>
           <Route exact path="/history">
-            <History history={history} setHistory={setHistory}/>
+            <History history={history} saveHistory={saveHistory}/>
           </Route>
           <Route path="/settings">
             <Settings config={config} setConfig={setConfig}/>

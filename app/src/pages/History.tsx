@@ -14,42 +14,42 @@ import {StorageService} from "../Storage";
 
 interface HistoryProps {
     history: HistoryLog[]
-    // TOdo: Make this typesafe
-    setHistory: (history: any) => void
-
+    saveHistory: (history: HistoryLog) => void
 }
-const History: React.FC<HistoryProps> = ({history, setHistory}) => {
+const History: React.FC<HistoryProps> = ({history, saveHistory}) => {
 
 
     // const [history, setHistory] = useState<HistoryLog[]>([])
 
-    const loadHistory = async () => {
-        const store = await StorageService.getInstance()
-        const history = await store.getHistory()
-
-        if (history === null) {
-            setHistory([])
-        } else {
-            setHistory(history)
-        }
-    }
+    // const loadHistory = async () => {
+    //     const store = await StorageService.getInstance()
+    //     const history = await store.getHistory()
+    //
+    //     if (history === null) {
+    //         setHistory([])
+    //     } else {
+    //         setHistory(history)
+    //     }
+    // }
 
     // TODO: Remove the ability to add miscellaneous history used in testing
     const addHistory = async () => {
-        setHistory([
-            ...history,
-            {
-                start: 1,
-                end: 1,
-                wage: 1,
-            }
-        ])
-        const store = await StorageService.getInstance()
-        store.setHistory(history)
+        saveHistory({
+            start: 1,
+            end: 1,
+            wage: 69,
+        })
+        // const store = await StorageService.getInstance()
+        // store.setHistory(history).then(() => {
+        //     console.log("OK!")
+        // })
+        // .catch(() => {
+        //     console.log("OOOPSIES")
+        // })
     }
 
     // Populate previous settings on load
-    useEffect(() => { loadHistory() }, []);
+    // useEffect(() => { loadHistory() }, []);
 
     const formatTime = (time: number): string => {
         const date = new Date(time)

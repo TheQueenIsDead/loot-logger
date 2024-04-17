@@ -1,15 +1,13 @@
 import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import {useEffect, useState} from "react";
-import {StorageService} from "../Storage";
 
 
 interface LogProps {
     wage: number
-    history: HistoryLog[]
-    setHistory: (history: HistoryLog[]) => void
+    saveHistory: (log: HistoryLog) => void
 }
 
-const Log: React.FC<LogProps> = ({wage, history}) => {
+const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
 
     const [startTime, setStartTime] = useState<number>(0);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
@@ -52,14 +50,10 @@ const Log: React.FC<LogProps> = ({wage, history}) => {
 
     // TODO: Move state up to the parent app so that the history page updates when the reset button is pushed.
     const handleReset = async () => {
-
-        // TODO: Push start, stop, and given wage to history
-        const store = await StorageService.getInstance()
-        const config = await store.getConfig()
-        await store.pushHistory({
-            start: startTime,
-            end: Date.now(),
-            wage: config.wage,
+        saveHistory({
+            end: startTime,
+            start: Date.now(),
+            wage: wage
         })
 
         setStartTime(0);
