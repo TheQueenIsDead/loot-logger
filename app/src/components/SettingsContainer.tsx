@@ -1,5 +1,3 @@
-import './SettingsContainer.css';
-
 import {IonAlert, IonButton, IonIcon, IonInput, IonItem, IonLabel, useIonToast} from "@ionic/react";
 import React, {useContext, useEffect, useState} from "react";
 import {StorageService} from '../services/Storage';

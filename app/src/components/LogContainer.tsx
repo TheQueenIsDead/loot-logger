@@ -1,4 +1,3 @@
-import './LogContainer.css';
 import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
 import {useEffect, useState} from "react";
 import {StorageService} from "../services/Storage";
