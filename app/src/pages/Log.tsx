@@ -1,21 +1,20 @@
 import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import {useEffect, useState} from "react";
 import {StorageService} from "../Storage";
-import Settings from "./Settings";
 
 
 interface LogProps {
-    config: Config
+    wage: number
     history: HistoryLog[]
     setHistory: (history: HistoryLog[]) => void
 }
 
-const Log: React.FC<LogProps> = ({config, history}) => {
+const Log: React.FC<LogProps> = ({wage, history}) => {
 
     const [startTime, setStartTime] = useState<number>(0);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
-    const [wage, setWage] = useState<number>(config.wage);
+
 
     useEffect(() => {
         if (startTime !== 0) {
@@ -89,7 +88,8 @@ const Log: React.FC<LogProps> = ({config, history}) => {
             <div className="container">
                 <div style={{textAlign: 'center'}}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
-                    <h2>${moneyEarned(elapsedTime)} earned @ ${wage}/ph</h2>
+                    {/*<h2>${moneyEarned(elapsedTime)} earned @ ${wage}/ph</h2>*/}
+                    <h2>${moneyEarned(elapsedTime)} earned @ ${wage.toFixed(2)}/ph</h2>
                     {startTime === 0 ? (
                         <IonButton onClick={handleStart}>Start</IonButton>
                     ) : (

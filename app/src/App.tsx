@@ -69,7 +69,7 @@ const App: React.FC = () => {
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/log">
-            <Log config={config} history={history} setHistory={setHistory} />
+            <Log wage={config.wage} history={history} setHistory={setHistory} />
           </Route>
           <Route exact path="/history">
             <History history={history} setHistory={setHistory}/>

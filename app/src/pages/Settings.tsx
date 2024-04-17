@@ -1,5 +1,5 @@
 import {
-    IonAlert, IonButton,
+    IonButton,
     IonContent,
     IonHeader, IonIcon,
     IonInput,
@@ -8,10 +8,8 @@ import {
     IonPage,
     IonTitle,
     IonToolbar,
-    useIonToast
 } from '@ionic/react';
 import React, {useEffect, useState} from "react";
-import {StorageService} from "../Storage";
 import {save} from "ionicons/icons";
 
 interface SettingsProps {
@@ -21,75 +19,36 @@ interface SettingsProps {
 
 const Settings: React.FC<SettingsProps> = ({config, setConfig}) => {
 
+    // TODO: Remove if not needed
+    // const [present] = useIonToast();
 
+    // Keep passed in props in local state in order to udate UI components
     let [state, setState] = useState<Config>(config)
 
-    // const [showAlert, setShowAlert] = useState<boolean>(false);
+    // Helper functions to update local state items
+    const setSalary= (salary: number) => {setState(previous => { return {...previous, ...{salary: salary}}})}
+    const setHours= (hours: number) => {setState(previous => { return {...previous, ...{hours: hours}}})}
+    const setWage= (wage: number) => {setState(previous => { return {...previous, ...{wage: wage}}})}
 
-    // const hourlyWage = useContext(AppContext);
+    // If the props are updated, update the local state with the changed values.
+    useEffect(() => {
+        setState(config)
+    }, [config]);
 
-    const [present] = useIonToast();
-
-    // const loadSettings = async () => {
-    //     const store = await StorageService.getInstance()
-    //     const config = await store.getConfig()
-    //     const settings: Config = {
-    //         hours: config.hours,
-    //         salary: config.salary,
-    //         wage: config.wage
-    //     }
-    //     return settings
-    // }
-    const saveSettings = async () => {
-        // const store = await StorageService.getInstance()
-        // store.setConfig(yearlySalary, weeklyHours, hourlyWage)
-        //     .then(() => {
-        //         present("Config Updated.", 3000)
-        //     })
-        //     .catch(() => {
-        //         present("Failed to save configuration!", 3000)
-        //     })
-        console.log({
-            hours: state.hours,
-            salary: state.salary,
-            wage: state.wage
-        })
-        // TODO: Enable persistence
-        // setConfig({
-        //     hours: state.hours,
-        //     salary: state.salary,
-        //     wage: state.wage
-        // })
-    }
-
-    const calculateHourlyWage = () => {
-        if (state.salary > 0 && state.hours > 0) {
-            const hourlyWageResult = state.salary / (52 * state.hours);
-            if (hourlyWageResult !== state.wage) {
-                // TODO: Update this in context
-                // setHourlyWage(hourlyWageResult);
-                state.wage = hourlyWageResult;
-                console.log(hourlyWageResult)
-            }
-        }
-    };
-
-    // // Populate previous settings on load
-    // useEffect(() => {
-    //     loadSettings().then(config => {
-    //         setYearlySalary(config.salary)
-    //         setWeeklyHours(config.hours)
-    //         // TODO: Update this in context
-    //         // setHourlyWage(config.wage)
-    //         console.log(config.wage)
-    //     })
-    // }, []);
-
-    // Calculate the hourly wage when yearly salary or weekly hours is updated
+    // Calculate the hourly wage when local salary or hours are updated
     useEffect(() => {
         calculateHourlyWage();
     }, [state.salary, state.hours]);
 
+    const calculateHourlyWage = () => {
+        console.log("Caclulating.... 🤓")
+        if (state.salary > 0 && state.hours > 0) {
+            const hourlyWageResult = state.salary / (52 * state.hours);
+            if (hourlyWageResult !== state.wage) {
+                setWage(hourlyWageResult)
+            }
+        }
+    };
 
     return (
     <IonPage>
@@ -109,12 +68,12 @@ const Settings: React.FC<SettingsProps> = ({config, setConfig}) => {
                 <IonItem>
                     <IonLabel position="floating">Yearly Salary ($)</IonLabel>
                     <IonInput type="number" value={state.salary}
-                              onIonChange={(e) => state.salary = parseInt(e.detail.value!, 10)}></IonInput>
+                              onIonChange={(e) => setSalary(parseInt(e.detail.value!, 10))}></IonInput>
                 </IonItem>
                 <IonItem>
                     <IonLabel position="floating">Weekly Hours Worked</IonLabel>
                     <IonInput type="number" value={state.hours}
-                              onIonChange={(e) => state.hours = parseInt(e.detail.value!, 10)}></IonInput>
+                              onIonChange={(e) => setHours(parseInt(e.detail.value!, 10))}></IonInput>
                 </IonItem>
                 {state.wage !== null && (
                     <IonItem>
@@ -129,7 +88,10 @@ const Settings: React.FC<SettingsProps> = ({config, setConfig}) => {
                 {/*    buttons={['OK']}*/}
                 {/*/>*/}
 
-                <IonButton onClick={saveSettings}>
+                <IonButton onClick={() => {
+                    console.log(state)
+                    setConfig(state)
+                }}>
                     <IonIcon icon={save}/> Save
                 </IonButton>
             </div>
