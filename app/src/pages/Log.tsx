@@ -34,11 +34,11 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
         return `${seconds}.${milliseconds.toString().padStart(2, '0')}`;
     };
 
-    const calculateMoneyEarned = (time: number): number => {
-        const seconds = Math.floor(time / 1000);
-        const moneyPerSecond = wage / 60 / 60
-        // return Math.round(seconds * moneyPerSecond * 100) / 100
-        return seconds * moneyPerSecond
+    const calculateMoneyEarned = (ellapsedTimeMilliseconds: number): number => {
+        const wagePerMinute = wage / 60
+        const wagePerSecond = wagePerMinute / 60
+        const wagePerMillisecond = wagePerSecond / 1000
+        return ellapsedTimeMilliseconds * wagePerMillisecond
     }
 
     const handleStart = () => {
