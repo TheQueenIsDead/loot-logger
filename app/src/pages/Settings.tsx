@@ -7,20 +7,19 @@ import {
     IonLabel,
     IonPage,
     IonTitle,
-    IonToolbar,
+    IonToolbar, useIonToast,
 } from '@ionic/react';
 import React, {useEffect, useState} from "react";
 import {save} from "ionicons/icons";
 
 interface SettingsProps {
     config: Config
-    saveConfig: (config: Config) => void
+    saveConfig: (config: Config) => Promise<void>
 }
 
 const Settings: React.FC<SettingsProps> = ({config, saveConfig}) => {
 
-    // TODO: Remove if not needed
-    // const [present] = useIonToast();
+    const [present] = useIonToast();
 
     // Keep passed in props in local state in order to udate UI components
     let [state, setState] = useState<Config>(config)
@@ -90,7 +89,19 @@ const Settings: React.FC<SettingsProps> = ({config, saveConfig}) => {
 
                 <IonButton onClick={() => {
                     console.log(state)
-                    saveConfig(state)
+                    saveConfig(state).then(() => {
+                        present({
+                            message: "Settings updated.",
+                            duration: 3000,
+                            position: 'top',
+                        })
+                    }).catch(err => {
+                        present({
+                            message: "Failed to update settings.",
+                            duration: 3000,
+                            position: 'top',
+                        })
+                    })
                 }}>
                     <IonIcon icon={save}/> Save
                 </IonButton>

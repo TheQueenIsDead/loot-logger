@@ -13,19 +13,8 @@ import React from "react";
 
 interface HistoryProps {
     history: HistoryLog[]
-    saveHistory: (history: HistoryLog) => void
 }
-const History: React.FC<HistoryProps> = ({history, saveHistory}) => {
-
-    // TODO: Remove the ability to add miscellaneous history used in testing
-    const addHistory = async () => {
-        saveHistory({
-            start: 1,
-            end: 1,
-            wage: 69,
-        })
-    }
-
+const History: React.FC<HistoryProps> = ({history}) => {
 
     const formatTime = (time: number): string => {
         const date = new Date(time)
@@ -66,12 +55,7 @@ const History: React.FC<HistoryProps> = ({history, saveHistory}) => {
                         </IonItem>
                     ))}
                 </IonList>
-                {/*TODO: Remove the ability to add miscellaneous history used in testing*/}
-                <IonButton onClick={addHistory}>
-                    New
-                </IonButton>
             </div>
-
         </IonContent>
     </IonPage>
     );

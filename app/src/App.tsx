@@ -46,44 +46,31 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<HistoryLog[]>([])
 
 
-  // Save history is a hook that can be passed to components so that they can push new history logs.
+  // Push history log is a hook that can be passed to components so that they can create new history logs.
   // It will update the local react state as well as persist to the ionic storage.
-  const saveHistory = (log: HistoryLog) => {
-    setHistory([...history, log])
+  const pushHistoryLog = async (log: HistoryLog) => {
 
-    StorageService.getInstance()
-        .then(store => {
-          store.pushHistory(log)
-              .then(() => {
-                console.log("Pushed history record: " + JSON.stringify(log))
-              })
-              .catch(err => {
-                console.log("Failed to push history record: " + err)
-              })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    try {
+      const store = await StorageService.getInstance();
+      await store.pushHistory(log);
+      setHistory([...history, log])
+      return Promise.resolve()
+    } catch (err) {
+      return Promise.reject(err)
+    }
   }
 
   // Save config is a hook that can be passed to components so that they can update the config.
   // It will update the local react state as well as persist to ionic storage.
-  const saveConfig = (config: Config) => {
-    setConfig(config)
-
-    StorageService.getInstance()
-    .then(store => {
-      store.setConfig(config)
-          .then(() => {
-            console.log("Successfully persisted config: " + JSON.stringify(config))
-          })
-          .catch(err => {
-            console.log("Failed to persist config: " + err)
-          })
-    })
-    .catch(err => {
-      console.log(err)
-    })
+  const saveConfig = async (config: Config) => {
+    try {
+      const store = await StorageService.getInstance();
+      await store.setConfig(config);
+      setConfig(config)
+      return Promise.resolve()
+    } catch (err) {
+      return Promise.reject(err)
+    }
   }
 
 
@@ -112,10 +99,10 @@ const App: React.FC = () => {
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/log">
-            <Log wage={config.wage} saveHistory={saveHistory} />
+            <Log wage={config.wage} pushHistoryLog={pushHistoryLog} />
           </Route>
           <Route exact path="/history">
-            <History history={history} saveHistory={saveHistory}/>
+            <History history={history} />
           </Route>
           <Route path="/settings">
             <Settings config={config} saveConfig={saveConfig}/>
