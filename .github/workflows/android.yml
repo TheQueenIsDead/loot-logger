@@ -18,7 +18,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          cache: gradle
+# TODO: Commit android folder and configure gradle cache
+#          cache: gradle
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
