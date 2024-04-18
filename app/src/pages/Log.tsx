@@ -51,6 +51,8 @@ const Log: React.FC<LogProps> = ({wage, pushHistoryLog}) => {
         }
     };
 
+    // TODO: Change this to only persist if the timer has started
+    //  (It's possible to add 0 duration logs by clicking this)
     const handleReset = async () => {
         pushHistoryLog({
             start: startTime,
