@@ -52,7 +52,7 @@ const History: React.FC<HistoryProps> = ({history, saveHistory}) => {
                         <IonLabel>Start</IonLabel>
                         <IonLabel>End</IonLabel>
                         <IonLabel>Duration</IonLabel>
-                        <IonLabel>Wage</IonLabel>
+                        <IonLabel>Wage ($/hour)</IonLabel>
                         <IonLabel>Earned</IonLabel>
                     </IonItem>
                     {/* Map through the items array and render each item */}
@@ -61,7 +61,7 @@ const History: React.FC<HistoryProps> = ({history, saveHistory}) => {
                             <IonLabel>{formatTime(item.start)}</IonLabel>
                             <IonLabel>{formatTime(item.end)}</IonLabel>
                             <IonLabel>{(item.end - item.start) / 1000}</IonLabel>
-                            <IonLabel>{item.wage}</IonLabel>
+                            <IonLabel>${item.wage.toFixed(2)}</IonLabel>
                             <IonLabel>${(((item.end - item.start) / 1000) * (item.wage / 60 / 60)).toFixed(2)}</IonLabel>
                         </IonItem>
                     ))}
