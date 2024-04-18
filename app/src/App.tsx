@@ -35,17 +35,14 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import {useEffect, useState} from "react";
 import {StorageService} from "./Storage";
+import {defaultConfig} from "./defaults";
 
 setupIonicReact();
 
 
 const App: React.FC = () => {
 
-  const [config, setConfig] = useState<Config>( {
-    salary: 0,
-    hours: 0,
-    wage: 0
-  })
+  const [config, setConfig] = useState<Config>(defaultConfig)
   const [history, setHistory] = useState<HistoryLog[]>([])
 
 
@@ -93,13 +90,8 @@ const App: React.FC = () => {
   // Retrieve stored config and history on load
   useEffect(() => {
     StorageService.getInstance().then(service => {
-      service.getConfig()
-      .then(config => {
-        if (config !== null) {
-          console.log("Updating config")
-          setConfig(config)
-        }
-      })
+      const config = service.getConfig()
+      setConfig(config)
       service.getHistory().then(history => {
         if (history !== null) {
           console.log("Updating history")

@@ -1,4 +1,5 @@
 import {Storage} from "@ionic/storage";
+import {defaultConfig} from "./defaults";
 
 export class StorageService {
 
@@ -19,18 +20,24 @@ export class StorageService {
         return StorageService.instance;
     }
 
-    public async getConfig() {
-        const [salary, hours, wage] = await Promise.all([
-            this.database.get('salary'),
-            this.database.get('hours'),
-            this.database.get('wage'),
-        ])
-        console.log(salary, hours, wage)
-        return {
-            salary: salary,
-            hours: hours,
-            wage: wage,
-        }
+    public getConfig() {
+
+        let config = defaultConfig
+
+        Promise.all([this.database.get('salary'), this.database.get('hours'), this.database.get('wage')])
+            .then(values => {
+                console.log("Initial DB load: " + JSON.stringify(values))
+                const [salary, hours, wage] = values
+                if (salary !== null) { config.salary = salary }
+                if (hours !== null) { config.hours = hours }
+                if (wage !== null) { config.wage = wage }
+                return config
+            })
+            .catch(err => {
+                throw err
+            })
+        console.log("ERRR not good BUDDY")
+        return config
     }
 
     public async setConfig(config: Config): Promise<[any, any, any]> {
