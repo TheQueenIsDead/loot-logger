@@ -4,10 +4,10 @@ import {useEffect, useState} from "react";
 
 interface LogProps {
     wage: number
-    saveHistory: (log: HistoryLog) => void
+    pushHistoryLog: (log: HistoryLog) => void
 }
 
-const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
+const Log: React.FC<LogProps> = ({wage, pushHistoryLog}) => {
 
     const [startTime, setStartTime] = useState<number>(0);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
@@ -52,7 +52,7 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
     };
 
     const handleReset = async () => {
-        saveHistory({
+        pushHistoryLog({
             start: startTime,
             end: startTime + elapsedTime,
             wage: wage
@@ -85,7 +85,6 @@ const Log: React.FC<LogProps> = ({wage, saveHistory}) => {
             <div className="container">
                 <div style={{textAlign: 'center'}}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
-                    {/*TODO: This value only updates per second, so the final value once stopped is different to the history log */}
                     <h2>${moneyEarned.toFixed(2)} earned @ ${wage.toFixed(2)}/ph</h2>
                     {startTime === 0 ? (
                         <IonButton onClick={handleStart}>Start</IonButton>
