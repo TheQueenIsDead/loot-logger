@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./app
+        working-directory: app/
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,9 +47,17 @@ jobs:
 #      - name: Build Android Dev APK
 #        run: npx cap build android
 
-      - name: Gradle Build
-        working-directory: ./android/
-        run: ./gradlew build
+      - name: Gradle Bundle
+        run: cd android && ./gradlew bundle
+
+      - name: Gradle Debug
+        run: cd android && ./gradlew assembleDebug
+
+      - name: Check folder content of android release
+        run: ls ./android/app/build/outputs/bundle/release
+
+      - name: Check folder content of android apk
+        run: ls ./android/app/build/outputs/apk
 
 #      - name: Build Android Release APK
 #        run: ionic capacitor build android --release --prod
