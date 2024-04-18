@@ -1,0 +1,90 @@
+name: Build Android
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/src/*
+      - app/public/*
+      - .github/workflows/android.yml
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # TODO: Commit android folder and configure gradle cache
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+#          cache: gradle
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install app dependencies
+        run: npm ci
+
+      - name: Install Ionic CLI
+        run: npm install -g @ionic/cli
+
+      - name: Ionic version
+        run: ionic version
+
+      - name: Build Ionic App
+        run: ionic build
+
+      # TODO: We should probably run this locally and have the android folder committed to VCS
+      - name: Add Android to Capacitor
+        run: npx cap add android
+
+      - name: Sync Android
+        run: npx cap sync android
+
+      - name: Gradle Bundle
+        run: cd android && ./gradlew bundle
+
+      - name: Gradle Debug
+        run: cd android && ./gradlew assembleDebug
+
+      - name: Check folder content of android release
+        run: ls ./android/app/build/outputs/bundle/release
+
+      - name: Check folder content of android apk
+        run: ls -R ./android/app/build/outputs/apk
+
+      - name: find apk
+        run: find . -name "*.apk"
+
+#      - name: Build Android Release APK
+#        run: ionic capacitor build android --release --prod
+#
+#      - name: Generate the Android App Bundle
+#        working-directory: ./android/
+#        run: ./gradlew bundle
+#
+      - name: Upload dev APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug
+          path: app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+#
+#      - name: Upload release bundle
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: app-release
+#          path: apk/app.aab
