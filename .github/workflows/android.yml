@@ -1,6 +1,13 @@
 name: Build Android
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/src/*
+      - app/public/*
+      - .github/workflows/android.yml
 
 jobs:
   build:
@@ -13,12 +20,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # TODO: Commit android folder and configure gradle cache
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-# TODO: Commit android folder and configure gradle cache
 #          cache: gradle
 
       - name: Setup Node.js
@@ -40,14 +47,12 @@ jobs:
       - name: Build Ionic App
         run: ionic build
 
+      # TODO: We should probably run this locally and have the android folder committed to VCS
       - name: Add Android to Capacitor
         run: npx cap add android
 
       - name: Sync Android
         run: npx cap sync android
-
-#      - name: Build Android Dev APK
-#        run: npx cap build android
 
       - name: Gradle Bundle
         run: cd android && ./gradlew bundle
