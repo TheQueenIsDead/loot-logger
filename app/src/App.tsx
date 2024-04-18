@@ -90,11 +90,14 @@ const App: React.FC = () => {
   // Retrieve stored config and history on load
   useEffect(() => {
     StorageService.getInstance().then(service => {
-      const config = service.getConfig()
-      const history = service.getHistory()
-      console.log("Initial application load", config, history)
-      setConfig(config)
-      setHistory(history)
+      service.getConfig().then(config => {
+        console.log("Initial application config", config)
+        setConfig(config)
+      })
+      service.getHistory().then(history => {
+        console.log("Initial application history", history)
+        setHistory(history)
+      })
     })
   }, []);
 

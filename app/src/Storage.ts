@@ -24,20 +24,24 @@ export class StorageService {
 
         let config = defaultConfig
 
-        Promise.all([this.database.get('salary'), this.database.get('hours'), this.database.get('wage')])
-            .then(values => {
-                console.log("Initial DB load: " + JSON.stringify(values))
-                const [salary, hours, wage] = values
-                if (salary !== null) { config.salary = salary }
-                if (hours !== null) { config.hours = hours }
-                if (wage !== null) { config.wage = wage }
-                return config
-            })
-            .catch(err => {
-                throw err
-            })
-        // console.log("ERRR not good BUDDY")
-        // return config
+        const data = await Promise.all([this.database.get('salary'), this.database.get('hours'), this.database.get('wage')])
+
+        const salary = data[0];
+        if (salary !== null) {
+            config.salary = salary
+        }
+
+        const hours = data[1]
+        if (hours !== null) {
+            config.hours = hours
+        }
+
+        const wage = data[2]
+        if (wage !== null) {
+            config.wage = wage
+        }
+
+        return config
     }
 
     public async setConfig(config: Config): Promise<[any, any, any]> {
@@ -49,22 +53,12 @@ export class StorageService {
     }
 
     public async getHistory(): Promise<HistoryLog[]> {
-
         let history: HistoryLog[] = []
-
-        this.database.get('history')
-            .then(value => {
-                console.log("Retrieved history:", value)
-                if (value !== null) {
-                    history =  JSON.parse(value)
-                    return history
-                }
-            })
-            .catch(err => {
-                console.log("Error retrieving history.")
-                throw err
-            })
-
+        const data = await this.database.get('history')
+        if (data !== null) {
+            history = JSON.parse(data)
+        }
+        return history
     }
 
     public async setHistory(history: HistoryLog[]) {
@@ -73,8 +67,8 @@ export class StorageService {
     }
 
     public async pushHistory(history: HistoryLog) {
-        const value = await this.getHistory()
-        value.push(history)
-        await this.setHistory(value)
+        const data = await this.getHistory()
+        data.push(history)
+        await this.setHistory(data)
     }
 }
