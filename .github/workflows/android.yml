@@ -1,0 +1,38 @@
+name: Build Android
+
+on: [push]
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install app dependencies
+        run: npm ci
+
+      - name: Build Ionic App
+        run: npx ionic build
+
+      - name: Add Android to Capacitor
+        run: npx cap add android
+
+      - name: Build Android Dev APK
+        run: npx cap build android
