@@ -1,4 +1,5 @@
 import {Storage} from "@ionic/storage";
+import {defaultConfig} from "./defaults";
 
 export class StorageService {
 
@@ -20,17 +21,27 @@ export class StorageService {
     }
 
     public async getConfig() {
-        const [salary, hours, wage] = await Promise.all([
-            this.database.get('salary'),
-            this.database.get('hours'),
-            this.database.get('wage'),
-        ])
-        console.log(salary, hours, wage)
-        return {
-            salary: salary,
-            hours: hours,
-            wage: wage,
+
+        let config = defaultConfig
+
+        const data = await Promise.all([this.database.get('salary'), this.database.get('hours'), this.database.get('wage')])
+
+        const salary = data[0];
+        if (salary !== null) {
+            config.salary = salary
         }
+
+        const hours = data[1]
+        if (hours !== null) {
+            config.hours = hours
+        }
+
+        const wage = data[2]
+        if (wage !== null) {
+            config.wage = wage
+        }
+
+        return config
     }
 
     public async setConfig(config: Config): Promise<[any, any, any]> {
@@ -41,9 +52,13 @@ export class StorageService {
         ])
     }
 
-    public async getHistory() {
-        const value = await this.database.get('history')
-        return JSON.parse(value)
+    public async getHistory(): Promise<HistoryLog[]> {
+        let history: HistoryLog[] = []
+        const data = await this.database.get('history')
+        if (data !== null) {
+            history = JSON.parse(data)
+        }
+        return history
     }
 
     public async setHistory(history: HistoryLog[]) {
@@ -52,8 +67,8 @@ export class StorageService {
     }
 
     public async pushHistory(history: HistoryLog) {
-        const value = await this.getHistory()
-        value.push(history)
-        await this.setHistory(value)
+        const data = await this.getHistory()
+        data.push(history)
+        await this.setHistory(data)
     }
 }
