@@ -91,13 +91,10 @@ const App: React.FC = () => {
   useEffect(() => {
     StorageService.getInstance().then(service => {
       const config = service.getConfig()
+      const history = service.getHistory()
+      console.log("Initial application load", config, history)
       setConfig(config)
-      service.getHistory().then(history => {
-        if (history !== null) {
-          console.log("Updating history")
-          setHistory(history)
-        }
-      })
+      setHistory(history)
     })
   }, []);
 

@@ -20,7 +20,7 @@ export class StorageService {
         return StorageService.instance;
     }
 
-    public getConfig() {
+    public async getConfig() {
 
         let config = defaultConfig
 
@@ -36,8 +36,8 @@ export class StorageService {
             .catch(err => {
                 throw err
             })
-        console.log("ERRR not good BUDDY")
-        return config
+        // console.log("ERRR not good BUDDY")
+        // return config
     }
 
     public async setConfig(config: Config): Promise<[any, any, any]> {
@@ -48,9 +48,23 @@ export class StorageService {
         ])
     }
 
-    public async getHistory() {
-        const value = await this.database.get('history')
-        return JSON.parse(value)
+    public async getHistory(): Promise<HistoryLog[]> {
+
+        let history: HistoryLog[] = []
+
+        this.database.get('history')
+            .then(value => {
+                console.log("Retrieved history:", value)
+                if (value !== null) {
+                    history =  JSON.parse(value)
+                    return history
+                }
+            })
+            .catch(err => {
+                console.log("Error retrieving history.")
+                throw err
+            })
+
     }
 
     public async setHistory(history: HistoryLog[]) {
