@@ -9,17 +9,36 @@ import {
     IonTitle,
     IonToolbar
 } from '@ionic/react';
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 interface HistoryProps {
     history: HistoryLog[]
 }
 const History: React.FC<HistoryProps> = ({history}) => {
 
+    const [totalTime, setTotalTime] = useState(0)
+    const [totalEarned, setTotalEarned] = useState(0)
     const formatTime = (time: number): string => {
         const date = new Date(time)
         return date.toLocaleTimeString()
     }
+
+    const calculateEarned = (item: HistoryLog): number => {
+        return (((item.end - item.start) / 1000) * (item.wage / 60 / 60))
+    }
+
+    useEffect(() => {
+        setTotalEarned(0)
+        setTotalTime(0)
+        history.forEach(log => {
+            setTotalTime(previous => {
+                return previous + ((log.end - log.start) / 1000)
+            })
+            setTotalEarned(previous => {
+                return previous + calculateEarned(log)
+            })
+        })
+    }, [history])
 
     return (
     <IonPage>
@@ -54,6 +73,13 @@ const History: React.FC<HistoryProps> = ({history}) => {
                             <IonLabel>${(((item.end - item.start) / 1000) * (item.wage / 60 / 60)).toFixed(2)}</IonLabel>
                         </IonItem>
                     ))}
+                    <IonItem key="summary">
+                        <IonLabel></IonLabel>
+                        <IonLabel></IonLabel>
+                        <IonLabel>{totalTime.toFixed(2)}s</IonLabel>
+                        <IonLabel></IonLabel>
+                        <IonLabel>${totalEarned.toFixed(2)}</IonLabel>
+                    </IonItem>
                 </IonList>
             </div>
         </IonContent>
