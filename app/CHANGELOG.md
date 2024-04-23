@@ -1,0 +1,33 @@
+# Changelog
+
+## 1.0.0 (2024-04-23)
+
+
+### Features
+
+* add a data store singleton service in order to save and persist settings config page ([7a38d3c](https://github.com/TheQueenIsDead/loo-t-logger/commit/7a38d3cad75fc421b055ab8cd862c3b02a0acbc0))
+* add ability to save history into storage service ([b7ee355](https://github.com/TheQueenIsDead/loo-t-logger/commit/b7ee355762e2a3b66143506885ed20f0e817ae94))
+* add button to add new items to history container ([fb17f83](https://github.com/TheQueenIsDead/loo-t-logger/commit/fb17f83c222d221b4418d0a22b67f088ff593946))
+* add history container and link page with some demo data ([3aa84dd](https://github.com/TheQueenIsDead/loo-t-logger/commit/3aa84dd1ec9c45c958d79e339d8da19861aba5cb))
+* add log container with hard coded hourly wage and start stop timer to track time ([906b10f](https://github.com/TheQueenIsDead/loo-t-logger/commit/906b10fade1fbc590d6812e919afc13923ee4080))
+* add settings page that calculates hourly wage and persists to ionic store ([c5fbf17](https://github.com/TheQueenIsDead/loo-t-logger/commit/c5fbf174f1f4dab8a12bc1b1786a0bfbadfcfb3e))
+* add toast to settings page ([d1d882f](https://github.com/TheQueenIsDead/loo-t-logger/commit/d1d882f019ef00df55858c319f81c94137e009a5))
+* add toaster to settings on successful save ([cc0c3ec](https://github.com/TheQueenIsDead/loo-t-logger/commit/cc0c3ece642a7bfe6da8831e58c224ce880d5a36))
+* display wage next to money earned ([0128d5d](https://github.com/TheQueenIsDead/loo-t-logger/commit/0128d5d3acea6f3db78921307b26c58eafbcec7e))
+* enable saving on reset and display money earned and duration in history view ([fb84304](https://github.com/TheQueenIsDead/loo-t-logger/commit/fb843049b745d1d5d49656fbd199ec024e4e8b31))
+* format dates nicely using locale string in history pane ([9374db1](https://github.com/TheQueenIsDead/loo-t-logger/commit/9374db1c1261e015ecc0515aebe65ecbf88b5435))
+* fully working save and load for config settings ([bef876a](https://github.com/TheQueenIsDead/loo-t-logger/commit/bef876a44cb616e6f79e73963aa3ac5e747c75bc))
+* initial commit ([985224d](https://github.com/TheQueenIsDead/loo-t-logger/commit/985224d967bfe71564833d5c8357560c9abad7b5))
+* rename Tab[1:3] to Log, History, and Settings ([77543e2](https://github.com/TheQueenIsDead/loo-t-logger/commit/77543e2ae402e07451182d02f6ff9b7a74106423))
+
+
+### Bug Fixes
+
+* change all null checks on startTime to check for 0 instead now that it is not nullable ([e2e4d58](https://github.com/TheQueenIsDead/loo-t-logger/commit/e2e4d58fb57e8e2eb5da6950a08910181051096d))
+* change save history call in log page in order to calculate endtime correctly ([d7f18d7](https://github.com/TheQueenIsDead/loo-t-logger/commit/d7f18d7ce98a216635afd1c74a5a6dc6258e750f))
+* convert money earned function to work with milliseconds ([aee0dc9](https://github.com/TheQueenIsDead/loo-t-logger/commit/aee0dc9daa0e339db55f7bf589a5016e344e37f8))
+* ensure getConfig returns a config object ([7fc9e9e](https://github.com/TheQueenIsDead/loo-t-logger/commit/7fc9e9e79adfefd980d405613201f79fee38fdeb))
+* fix blank page on load when no config is present by ensuring non-null values are returned by getHistory ([304944c](https://github.com/TheQueenIsDead/loo-t-logger/commit/304944c681c5095d853f4a1f897fc4f60b15d543))
+* remove imports from previously deleted css files ([4ac7193](https://github.com/TheQueenIsDead/loo-t-logger/commit/4ac719394e44ab20a6d91a455f3ba56db9cfcbc9))
+* remove IonHeader and IonTitle from LogContainer in order to have component render ([16ff69f](https://github.com/TheQueenIsDead/loo-t-logger/commit/16ff69f2517b27c688dbb42c933f7a0ad8469725))
+* set start time 0 instead of null ([d570183](https://github.com/TheQueenIsDead/loo-t-logger/commit/d57018304a5da108247efb80dccb41492a22cac7))
