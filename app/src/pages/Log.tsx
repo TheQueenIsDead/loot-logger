@@ -1,13 +1,12 @@
 import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import {useEffect, useState} from "react";
+import { useStorage } from '../context/StorageContext';
+import Header from '../components/Header';
 
 
-interface LogProps {
-    wage: number
-    pushHistoryLog: (log: HistoryLog) => void
-}
+const Log: React.FC = () => {
 
-const Log: React.FC<LogProps> = ({wage, pushHistoryLog}) => {
+    const { config, pushHistoryLog } = useStorage();
 
     const [startTime, setStartTime] = useState<number>(0);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
@@ -35,7 +34,7 @@ const Log: React.FC<LogProps> = ({wage, pushHistoryLog}) => {
     };
 
     const calculateMoneyEarned = (ellapsedTimeMilliseconds: number): number => {
-        const wagePerMinute = wage / 60
+        const wagePerMinute = config.wage / 60
         const wagePerSecond = wagePerMinute / 60
         const wagePerMillisecond = wagePerSecond / 1000
         return ellapsedTimeMilliseconds * wagePerMillisecond
@@ -57,7 +56,7 @@ const Log: React.FC<LogProps> = ({wage, pushHistoryLog}) => {
         pushHistoryLog({
             start: startTime,
             end: startTime + elapsedTime,
-            wage: wage
+            wage: config.wage
         })
 
         setStartTime(0);
@@ -72,11 +71,7 @@ const Log: React.FC<LogProps> = ({wage, pushHistoryLog}) => {
 
     return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Log</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+        <Header title='Log'/>
         <IonContent fullscreen>
             <IonHeader collapse="condense">
                 <IonToolbar>
@@ -87,7 +82,7 @@ const Log: React.FC<LogProps> = ({wage, pushHistoryLog}) => {
             <div className="container">
                 <div style={{textAlign: 'center'}}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
-                    <h2>${moneyEarned.toFixed(2)} earned @ ${wage.toFixed(2)}/ph</h2>
+                    <h2>${moneyEarned.toFixed(2)} earned @ ${config.wage.toFixed(2)}/ph</h2>
                     {startTime === 0 ? (
                         <IonButton onClick={handleStart}>Start</IonButton>
                     ) : (

@@ -33,100 +33,54 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import {useEffect, useState} from "react";
-import {StorageService} from "./Storage";
-import {defaultConfig} from "./defaults";
+import { StorageProvider } from './context/StorageContext';
+import { AuthProvider } from './context/AuthContext';
+import UserManagement from './UserManagement';
 
 setupIonicReact();
 
 
 const App: React.FC = () => {
-
-  const [config, setConfig] = useState<Config>(defaultConfig)
-  const [history, setHistory] = useState<HistoryLog[]>([])
-
-
-  // Push history log is a hook that can be passed to components so that they can create new history logs.
-  // It will update the local react state as well as persist to the ionic storage.
-  const pushHistoryLog = async (log: HistoryLog) => {
-
-    try {
-      const store = await StorageService.getInstance();
-      await store.pushHistory(log);
-      setHistory([...history, log])
-      return Promise.resolve()
-    } catch (err) {
-      return Promise.reject(err)
-    }
-  }
-
-  // Save config is a hook that can be passed to components so that they can update the config.
-  // It will update the local react state as well as persist to ionic storage.
-  const saveConfig = async (config: Config) => {
-    try {
-      const store = await StorageService.getInstance();
-      await store.setConfig(config);
-      setConfig(config)
-      return Promise.resolve()
-    } catch (err) {
-      return Promise.reject(err)
-    }
-  }
-
-
-  // Retrieve stored config and history on load
-  useEffect(() => {
-    StorageService.getInstance().then(service => {
-      service.getConfig().then(config => {
-        console.log("Initial application config", config)
-        setConfig(config)
-      })
-      service.getHistory().then(history => {
-        console.log("Initial application history", history)
-        setHistory(history)
-      })
-    })
-  }, []);
-
-  useEffect(() => {
-    console.log("UPDATING ROOT CONFIG" + JSON.stringify(config))
-
-  }, [config]);
-
   return (
   <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/log">
-            <Log wage={config.wage} pushHistoryLog={pushHistoryLog} />
-          </Route>
-          <Route exact path="/history">
-            <History history={history} />
-          </Route>
-          <Route path="/settings">
-            <Settings config={config} saveConfig={saveConfig}/>
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/log" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="log" href="/log">
-            <IonIcon aria-hidden="true" icon={stopwatch} />
-            <IonLabel>Log</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="history" href="/history">
-            <IonIcon aria-hidden="true" icon={list} />
-            <IonLabel>History</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="settings" href="/settings">
-            <IonIcon aria-hidden="true" icon={settings} />
-            <IonLabel>Settings</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
+    <StorageProvider>
+      <AuthProvider>
+        <UserManagement>
+          <IonReactRouter>
+            <IonTabs>
+              <IonRouterOutlet>
+                <Route exact path="/log">
+                  <Log/>
+                </Route>
+                <Route exact path="/history">
+                  <History/>
+                </Route>
+                <Route path="/settings">
+                  <Settings/>
+                </Route>
+                <Route exact path="/">
+                  <Redirect to="/log" />
+                </Route>
+              </IonRouterOutlet>
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="log" href="/log">
+                  <IonIcon aria-hidden="true" icon={stopwatch} />
+                  <IonLabel>Log</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="history" href="/history">
+                  <IonIcon aria-hidden="true" icon={list} />
+                  <IonLabel>History</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="settings" href="/settings">
+                  <IonIcon aria-hidden="true" icon={settings} />
+                  <IonLabel>Settings</IonLabel>
+                </IonTabButton>
+              </IonTabBar>
+            </IonTabs>
+          </IonReactRouter>
+        </UserManagement>
+      </AuthProvider>
+    </StorageProvider>
   </IonApp>
   )
 };

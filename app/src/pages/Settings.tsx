@@ -11,13 +11,13 @@ import {
 } from '@ionic/react';
 import React, {useEffect, useState} from "react";
 import {save} from "ionicons/icons";
+import { useStorage } from '../context/StorageContext';
+import Header from '../components/Header';
 
-interface SettingsProps {
-    config: Config
-    saveConfig: (config: Config) => Promise<void>
-}
+const Settings: React.FC = () => {
 
-const Settings: React.FC<SettingsProps> = ({config, saveConfig}) => {
+    const { config, saveConfig } = useStorage();
+
 
     const [present] = useIonToast();
 
@@ -51,11 +51,7 @@ const Settings: React.FC<SettingsProps> = ({config, saveConfig}) => {
 
     return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Settings</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+        <Header title='Settings'/>
         <IonContent fullscreen>
             <IonHeader collapse="condense">
                 <IonToolbar>
