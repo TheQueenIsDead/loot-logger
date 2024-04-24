@@ -10,11 +10,11 @@ import {
     IonToolbar
 } from '@ionic/react';
 import React from "react";
+import { useStorage } from '../context/StorageContext';
 
-interface HistoryProps {
-    history: HistoryLog[]
-}
-const History: React.FC<HistoryProps> = ({history}) => {
+const History: React.FC = () => {
+
+    const { history } = useStorage();
 
     const formatTime = (time: number): string => {
         const date = new Date(time)
@@ -45,15 +45,23 @@ const History: React.FC<HistoryProps> = ({history}) => {
                         <IonLabel>Earned</IonLabel>
                     </IonItem>
                     {/* Map through the items array and render each item */}
-                    {history.map((item, index) => (
+                    {history.length > 0 ? (
+                    history.map((item, index) => (
                         <IonItem key={index}>
                             <IonLabel>{formatTime(item.start)}</IonLabel>
                             <IonLabel>{formatTime(item.end)}</IonLabel>
-                            <IonLabel>{(item.end - item.start) / 1000}</IonLabel>
-                            <IonLabel>${item.wage.toFixed(2)}</IonLabel>
+                            <IonLabel>{(item.end - item.start) / 1000} seconds</IonLabel>
+                            {item.wage != null ? (
+                                <IonLabel>${item.wage.toFixed(2)} per hour</IonLabel>
+                            ) : (<IonLabel>Wage information missing</IonLabel>)}                            
                             <IonLabel>${(((item.end - item.start) / 1000) * (item.wage / 60 / 60)).toFixed(2)}</IonLabel>
                         </IonItem>
-                    ))}
+                    ))
+                ) : (
+                    <IonItem>
+                        <IonLabel>No history items available</IonLabel>
+                    </IonItem>
+                )}
                 </IonList>
             </div>
         </IonContent>

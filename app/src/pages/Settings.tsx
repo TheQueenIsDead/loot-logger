@@ -11,13 +11,12 @@ import {
 } from '@ionic/react';
 import React, {useEffect, useState} from "react";
 import {save} from "ionicons/icons";
+import { useStorage } from '../context/StorageContext';
 
-interface SettingsProps {
-    config: Config
-    saveConfig: (config: Config) => Promise<void>
-}
+const Settings: React.FC = () => {
 
-const Settings: React.FC<SettingsProps> = ({config, saveConfig}) => {
+    const { config, saveConfig } = useStorage();
+
 
     const [present] = useIonToast();
 
