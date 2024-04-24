@@ -1,6 +1,7 @@
 import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import {useEffect, useState} from "react";
 import { useStorage } from '../context/StorageContext';
+import Header from '../components/Header';
 
 
 const Log: React.FC = () => {
@@ -70,11 +71,7 @@ const Log: React.FC = () => {
 
     return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Log</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+        <Header title='Log'/>
         <IonContent fullscreen>
             <IonHeader collapse="condense">
                 <IonToolbar>

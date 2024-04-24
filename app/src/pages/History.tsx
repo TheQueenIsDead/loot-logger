@@ -11,6 +11,7 @@ import {
 } from '@ionic/react';
 import React from "react";
 import { useStorage } from '../context/StorageContext';
+import Header from '../components/Header';
 
 const History: React.FC = () => {
 
@@ -23,11 +24,7 @@ const History: React.FC = () => {
 
     return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>History</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+        <Header title='History'/>
         <IonContent fullscreen>
             <IonHeader collapse="condense">
                 <IonToolbar>

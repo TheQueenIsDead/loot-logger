@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     async function register(email: string, password: string) {
         try {
             // Register the user with email/password credentials
-            await app.emailPasswordAuth.registerUser(email, password);
+            await app.emailPasswordAuth.registerUser({email, password});
             // Automatically log in the user after registration
             await login(email, password);
         } catch (error) {
