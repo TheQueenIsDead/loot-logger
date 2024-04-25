@@ -1,14 +1,31 @@
 name: Build Android
 
 on:
+  # Automatically build when developing on the `build/android` branch.
   push:
     branches:
-      - main
-      - feature/android
+      - build/android
     paths:
       - app/src/*
       - app/public/*
       - .github/workflows/android.yml
+  # Else, builds will occur when manually called or triggered by release please.
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+        description: |
+          The git tag to use when checking out. Defaults to the main branch. 
+          Will attempt to upload APK's to the corresponding GitHub release if provided
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+        type: string
+        description: |
+          The git tag to use when checking out. Defaults to the main branch. 
+          Will attempt to upload APK's to the corresponding GitHub release if provided
 
 jobs:
   build:
@@ -18,8 +35,18 @@ jobs:
       run:
         working-directory: app/
     steps:
-      - name: Checkout
+
+      # If we are not provided with a tag, checkout the default branch
+      - if: ${{ inputs.tag == '' }}
+        name: Checkout
         uses: actions/checkout@v4
+
+      # Else, checkout the provided tag. Value is given on workflow call or dispatch
+      - if: ${{ inputs.tag != '' }}
+        name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -28,61 +55,56 @@ jobs:
           java-version: 17
           cache: gradle
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 21
           cache: npm
           cache-dependency-path: app/package-lock.json
 
-      - name: Install app dependencies
+      - name: Install Node Dependencies
         run: npm ci
 
       - name: Install Ionic CLI
         run: npm install -g @ionic/cli
 
-      - name: Ionic version
+      - name: Debug Ionic Version
         run: ionic version
 
       - name: Build Ionic App
         run: ionic build
 
+      - name: Generate Assets
+        run: |
+          cd assets
+          npx capacitor-assets generate
+          cd ../
+          ionic capacitor build android --release --prod --no-open
+
       - name: Sync Android
         run: npx cap sync android
 
-      - name: Build Android Release APK
-        run: ionic capacitor build android --release --prod --no-open
-
       - run: chmod +x ./android/gradlew
 
+      # This creates an .aab (fancy .apk), which can later be signed and used to publish to the play store
       - name: Gradle Bundle
         run: cd android && ./gradlew bundle
 
-      - name: Gradle Debug
+      # This generates an .apk file that can only be used as a debug / manual installation candidate.
+      - name: Gradle Assemble Debug
         run: cd android && ./gradlew assembleDebug
 
-      - name: Check folder content of android release
-        run: ls ./android/app/build/outputs/bundle/release
+      - name: Rename Debug APK
+        run: |
+          mv app/android/app/build/outputs/apk/debug/app-debug.apk app/android/app/build/outputs/apk/debug/LootLogger.apk
 
-      - name: Check folder content of android apk
-        run: ls -R ./android/app/build/outputs/apk
-
-      - name: find apk
-        run: find . -name "*.apk"
-
-#      - name: Generate the Android App Bundle
-#        working-directory: ./android/
-#        run: ./gradlew bundle
-
-      - name: Upload dev APK
+      - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: debug
-          path: app/android/app/build/outputs/apk/debug/app-debug.apk
+          name: apk
+          path: app/android/app/build/outputs/apk/debug/LootLogger.apk
           if-no-files-found: error
 
-#      - name: Upload release bundle
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: app-release
-#          path: apk/app.aab
+      - if: ${{ inputs.tag != '' }}
+        name: Upload APK to GitHub Release
+        run: gh release upload ${{ inputs.tag }} app/android/app/build/outputs/apk/debug/LootLogger.apk
