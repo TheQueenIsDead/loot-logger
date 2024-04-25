@@ -1,1 +1,6 @@
-[]
+[
+  {
+    "name": "NewUserWebhook",
+    "private": true
+  }
+]
