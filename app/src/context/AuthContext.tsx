@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import * as Realm from 'realm-web';
 
-const REALM_APP_ID = "application-0-vyzlwzl"; // Replace with your App ID
+const REALM_APP_ID = process.env.MONGO_REALM_APP_ID || ""; // Replace with your App ID
 const app = new Realm.App({ id: REALM_APP_ID });
 
 interface AuthContextType {
