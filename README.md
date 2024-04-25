@@ -8,7 +8,7 @@ It is built using the [Ionic Framework](https://ionicframework.com/) backed by [
 
 ## Web
 
-The `main` branch of the app is hosted on Cloudflare Pages at [loo-t-logger.pages.dev](https://loo-t-logger.pages.dev)
+The `main` branch of the app is hosted on Cloudflare Pages at [lootlogger.app](https://lootlogger.app)
 
 To start developing, clone the repository and follow the below steps
 
