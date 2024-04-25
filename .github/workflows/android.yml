@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/android
     paths:
       - app/src/*
       - app/public/*
@@ -54,6 +55,9 @@ jobs:
       - name: Sync Android
         run: npx cap sync android
 
+      - name: Build Android Release APK
+        run: ionic capacitor build android --release --prod --no-open
+
       - name: Gradle Bundle
         run: cd android && ./gradlew bundle
 
@@ -69,20 +73,17 @@ jobs:
       - name: find apk
         run: find . -name "*.apk"
 
-#      - name: Build Android Release APK
-#        run: ionic capacitor build android --release --prod
-#
 #      - name: Generate the Android App Bundle
 #        working-directory: ./android/
 #        run: ./gradlew bundle
-#
+
       - name: Upload dev APK
         uses: actions/upload-artifact@v4
         with:
           name: debug
           path: app/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-#
+
 #      - name: Upload release bundle
 #        uses: actions/upload-artifact@v1
 #        with:
