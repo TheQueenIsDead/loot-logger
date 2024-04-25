@@ -1,10 +1,11 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-# Loo-t-Logger
+# 🚽 LootLogger 💩
 
-Loo-t-Logger is a application that allows you to track how much money you get paid for taking a poop at work.
+LootLogger is an application that allows you to track how much money you get paid for taking a poop at work.
 
-It is built using the [Ionic Framework](https://ionicframework.com/) backed by [React](https://react.dev/).
+It is built using the [Ionic Framework](https://ionicframework.com/) backed by [React](https://react.dev/), 
+and utilises [MongoDB Realm](https://www.mongodb.com/developer/products/realm/) for backend persistence and authentication.
 
 ## Web
 
