@@ -34,3 +34,12 @@ To download, navigate to the [Build Android](https://github.com/TheQueenIsDead/l
 workflow, select a workflow run, and download the `debug` artifact.
 
 Once downloaded, the `.apk` can be extracted, and installed on your Android device.
+
+To develop locally, generate the latest version of the assets and android code by running
+
+```bash
+npx capacitor-assets generate
+npx cap sync
+```
+
+Then in Android Studio, import a new project by opening the `build.gradle` file located at `app/android/build.gradle`.
