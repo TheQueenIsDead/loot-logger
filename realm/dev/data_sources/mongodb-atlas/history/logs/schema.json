@@ -1,0 +1,22 @@
+{
+    "title": "HistoryLog",
+    "properties": {
+        "start": {
+            "bsonType": "date"
+        },
+        "user_id": {
+            "bsonType": "string"
+        },
+        "end": {
+            "bsonType": "date"
+        },
+        "_id": {
+            "bsonType": "objectId"
+        }
+    },
+    "required": [
+        "start",
+        "user_id",
+        "end"
+    ]
+}
