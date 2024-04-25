@@ -8,4 +8,5 @@ To generate different renditions of assets, the capacitor-assets library can be 
 ```bash
 cd app/
 npx capacitor-assets generate
+npx cap sync
 ```
