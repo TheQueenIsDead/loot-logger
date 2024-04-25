@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/android
     paths:
       - app/src/*
       - app/public/*
@@ -20,13 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # TODO: Commit android folder and configure gradle cache
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-#          cache: gradle
+          cache: gradle
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,12 +47,13 @@ jobs:
       - name: Build Ionic App
         run: ionic build
 
-      # TODO: We should probably run this locally and have the android folder committed to VCS
-      - name: Add Android to Capacitor
-        run: npx cap add android
-
       - name: Sync Android
         run: npx cap sync android
+
+      - name: Build Android Release APK
+        run: ionic capacitor build android --release --prod --no-open
+
+      - run: chmod +x ./android/gradlew
 
       - name: Gradle Bundle
         run: cd android && ./gradlew bundle
@@ -69,20 +70,17 @@ jobs:
       - name: find apk
         run: find . -name "*.apk"
 
-#      - name: Build Android Release APK
-#        run: ionic capacitor build android --release --prod
-#
 #      - name: Generate the Android App Bundle
 #        working-directory: ./android/
 #        run: ./gradlew bundle
-#
+
       - name: Upload dev APK
         uses: actions/upload-artifact@v4
         with:
           name: debug
           path: app/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-#
+
 #      - name: Upload release bundle
 #        uses: actions/upload-artifact@v1
 #        with:
