@@ -1,6 +1,6 @@
 [
-  {
-    "name": "NewUserWebhook",
-    "private": true
-  }
+    {
+        "name": "NewUserWebhook",
+        "private": true
+    }
 ]

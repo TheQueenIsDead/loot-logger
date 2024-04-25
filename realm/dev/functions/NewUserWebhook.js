@@ -5,7 +5,7 @@ exports = async function() {
   const user = context.user
 
   const webhook = context.values.get("webhook-dev");
-  
+
   const response = await context.http.post({
     url: webhook,
     body: { 
