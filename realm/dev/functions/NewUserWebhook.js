@@ -1,6 +1,6 @@
 
 
-exports = async function() {
+exports = async function(event) {
   
   const user = context.user
 
@@ -9,7 +9,7 @@ exports = async function() {
   const response = await context.http.post({
     url: webhook,
     body: { 
-      content: JSON.stringify(user),
+      content: JSON.stringify(event),
       username: "Mongo",
       avatar_url: "https://1000logos.net/wp-content/uploads/2020/08/MongoDB-Emblem-500x313.jpg"
     },
