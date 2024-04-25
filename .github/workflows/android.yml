@@ -48,10 +48,6 @@ jobs:
       - name: Build Ionic App
         run: ionic build
 
-      # TODO: We should probably run this locally and have the android folder committed to VCS
-      - name: Add Android to Capacitor
-        run: npx cap add android
-
       - name: Sync Android
         run: npx cap sync android
 
