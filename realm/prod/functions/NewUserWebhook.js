@@ -3,7 +3,7 @@
 exports = async function(event) {
   
 
-  const webhook = context.values.get("webhook-dev");
+  const webhook = context.values.get("webhook-prod");
   
   const message = `Welcome to LootLogger ${event.user.data.email}! User ${event.user.id} signed up via ${event.providers}`;
 
