@@ -21,13 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # TODO: Commit android folder and configure gradle cache
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-#          cache: gradle
+          cache: gradle
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
