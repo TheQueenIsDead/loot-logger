@@ -2,10 +2,14 @@ import React, { ReactNode } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import { StorageProvider } from './context/StorageContext';
+import {useIonToast} from "@ionic/react";
 
 
 const UserManagement: React.FC<{children: ReactNode}> = ({ children }) => {
     const { currentUser, login, register, logout } = useAuth();
+
+    const [present] = useIonToast();
+
 
     // Check if user is logged in
     const isAuthenticated = currentUser !== null;
@@ -15,6 +19,11 @@ const UserManagement: React.FC<{children: ReactNode}> = ({ children }) => {
         try {
             await login(email, password);
         } catch (error) {
+            present({
+                message: "Failed to login.",
+                duration: 3000,
+                position: 'top',
+            })
             console.error("Failed to log in:", error);
             // Handle login failure (e.g., show error message)
         }
@@ -34,6 +43,11 @@ const UserManagement: React.FC<{children: ReactNode}> = ({ children }) => {
         try {
             await logout();
         } catch (error) {
+            present({
+                message: "Failed to logout.",
+                duration: 3000,
+                position: 'top',
+            })
             console.error("Failed to log out:", error);
             // Handle logout failure (e.g., show error message)
         }
