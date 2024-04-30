@@ -1,11 +1,11 @@
 import React, { ReactNode } from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { RealmProvider, useRealm } from './context/RealmContext';
 import Login from './pages/Login';
 import { StorageProvider } from './context/StorageContext';
 
 
 const UserManagement: React.FC<{children: ReactNode}> = ({ children }) => {
-    const { currentUser, login, register, logout } = useAuth();
+    const { currentUser, login, register, logout } = useRealm();
 
     // Check if user is logged in
     const isAuthenticated = currentUser !== null;
