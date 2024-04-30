@@ -111,4 +111,6 @@ jobs:
 
       - if: ${{ inputs.tag != '' }}
         name: Upload APK to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: gh release upload ${{ inputs.tag }} ./android/app/build/outputs/apk/debug/LootLogger.apk
