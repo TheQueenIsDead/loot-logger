@@ -4,6 +4,7 @@ import {useRealm} from "./RealmContext";
 
 
 import * as Realm from "realm-web";
+// @ts-ignore
 import InsertOneResult = Realm.Services.MongoDB.InsertOneResult;
 const {
     BSON: { ObjectId },
