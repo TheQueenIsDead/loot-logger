@@ -51,10 +51,26 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
             throw 'could not push to database'
         }
 
+        type MongoHistoryLog = {
+            _id?: Realm.BSON.ObjectId;
+            end: Date;
+            start: Date;
+            user_id: string;
+        };
+
+
+        let mongoLog: MongoHistoryLog = {
+            start: new Date(log.start),
+            end: new Date(log.end),
+            user_id: currentUser.id,
+        }
+
+
+
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
         console.log(collection)
-        const res  = await collection.insertOne(log);
+        const res  = await collection.insertOne(mongoLog);
 
         console.log(res)
         return res
