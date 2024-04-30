@@ -105,7 +105,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: ./android/app/build/outputs/apk/debug/LootLogger.apk
+          # Add app, as this is the default working directory, but not used by the action
+          path: ./app/android/app/build/outputs/apk/debug/LootLogger.apk
           if-no-files-found: error
 
       - if: ${{ inputs.tag != '' }}
