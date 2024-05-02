@@ -46,6 +46,34 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
     const getCollection = (collection: string) => {
        return
     }
+
+    useEffect(() => {
+        getHistoryLog().then(h => {
+            setHistory(h)
+        })
+
+    }, []);
+
+    const getHistoryLog = async () : Promise<HistoryLog[]> => {
+        if (currentUser === null){
+            throw 'could not retrieve history from database'
+        }
+        const mongo = currentUser.mongoClient('mongodb-atlas');
+        const collection = mongo.db('history').collection('logs');
+        console.log(collection)
+        const res  = await collection.find({user_id: currentUser.id});
+
+        let history: HistoryLog[] = [];
+        for (let r of res) {
+            console.log(r)
+            history.push({
+                start: new Date(r.start).getUTCMilliseconds(),
+                end: new Date(r.end).getUTCMilliseconds(),
+                wage: r.wage,
+            })
+        }
+        return history
+    }
     const pushHistoryLog = async (log: HistoryLog): Promise<InsertOneResult<any>> => {
 
         if (currentUser === null) {
@@ -72,6 +100,13 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         const collection = mongo.db('history').collection('logs');
         console.log(collection)
         const res  = await collection.insertOne(mongoLog);
+
+        if (res !== null) {
+            setHistory([
+                ...history,
+                log
+            ])
+        }
 
         console.log(res)
         return res
