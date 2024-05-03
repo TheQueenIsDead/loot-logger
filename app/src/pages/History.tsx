@@ -10,10 +10,7 @@ const History: React.FC = () => {
     const { history } = useStorage();
 
     const formatTime = (time: Date): string => {
-        const date = new Date(time)
-
         return moment(time).format("YYYY-MM-DD h:m:s a ")
-        // return date.toLocaleTimeString()
     }
 
     const timeDiffMilliseconds = (start: Date, end: Date): number => {

@@ -7,6 +7,3 @@ export type MongoHistoryLog = {
     end: Date,
     wage: number,
 }
-
-// export default class MongoHistoryLog {
-// }

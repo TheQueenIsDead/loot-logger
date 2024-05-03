@@ -36,6 +36,7 @@ import './theme/variables.css';
 import { StorageProvider } from './context/StorageContext';
 import { RealmProvider } from './context/RealmContext';
 import UserManagement from './UserManagement';
+import React from "react";
 
 setupIonicReact();
 

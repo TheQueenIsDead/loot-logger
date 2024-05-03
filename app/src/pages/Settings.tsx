@@ -21,7 +21,7 @@ const Settings: React.FC = () => {
 
     const [present] = useIonToast();
 
-    // Keep passed in props in local state in order to udate UI components
+    // Keep passed in props in local state in order to update UI components
     let [state, setState] = useState<Config>(config)
 
     // Helper functions to update local state items
@@ -40,7 +40,7 @@ const Settings: React.FC = () => {
     }, [state.salary, state.hours]);
 
     const calculateHourlyWage = () => {
-        console.log("Caclulating.... 🤓")
+        console.log("Calculating.... 🤓")
         if (state.salary > 0 && state.hours > 0) {
             const hourlyWageResult = state.salary / (52 * state.hours);
             if (hourlyWageResult !== state.wage) {
@@ -91,7 +91,7 @@ const Settings: React.FC = () => {
                             duration: 3000,
                             position: 'top',
                         })
-                    }).catch(err => {
+                    }).catch(() => {
                         present({
                             message: "Failed to update settings.",
                             duration: 3000,

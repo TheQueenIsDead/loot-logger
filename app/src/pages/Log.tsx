@@ -1,5 +1,5 @@
 import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useStorage } from '../context/StorageContext';
 import Header from '../components/Header';
 import moment from 'moment';
@@ -37,11 +37,11 @@ const Log: React.FC = () => {
         return `${seconds}.${milliseconds.toString().padStart(2, '0')}`;
     };
 
-    const calculateMoneyEarned = (ellapsedTimeMilliseconds: number): number => {
+    const calculateMoneyEarned = (elapsedTimeMilliseconds: number): number => {
         const wagePerMinute = config.wage / 60
         const wagePerSecond = wagePerMinute / 60
         const wagePerMillisecond = wagePerSecond / 1000
-        return ellapsedTimeMilliseconds * wagePerMillisecond
+        return elapsedTimeMilliseconds * wagePerMillisecond
     }
 
     const handleStart = () => {
