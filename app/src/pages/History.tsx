@@ -12,14 +12,17 @@ import {
 import React from "react";
 import { useStorage } from '../context/StorageContext';
 import Header from '../components/Header';
+import moment from "moment";
 
 const History: React.FC = () => {
 
     const { history } = useStorage();
 
-    const formatTime = (time: number): string => {
+    const formatTime = (time: Date): string => {
         const date = new Date(time)
-        return date.toLocaleTimeString()
+
+        return moment(time).toISOString()
+        // return date.toLocaleTimeString()
     }
 
     return (

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { StorageService } from '../Storage';
 import {useRealm} from "./RealmContext";
+import { MongoHistoryLog } from '../models/models'
 
 
 import * as Realm from "realm-web";
@@ -16,8 +17,8 @@ const app = new Realm.App({ id: REALM_APP_ID });
 
 interface StorageContextType {
     config: Config;
-    history: HistoryLog[];
-    pushHistoryLog: (log: HistoryLog) => Promise<InsertOneResult<any>>;
+    history: MongoHistoryLog[];
+    pushHistoryLog: (log: MongoHistoryLog) => Promise<InsertOneResult<any>>;
     saveConfig: (config: Config) => Promise<void>;
 }
 
@@ -36,11 +37,13 @@ const StorageContext = createContext<StorageContextType>(defaultContextValue);
 
 export const useStorage = () => useContext(StorageContext);
 
+
+
 export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) => {
 
     const {currentUser} = useRealm();
     const [config, setConfig] = useState<Config>(defaultContextValue.config);
-    const [history, setHistory] = useState<HistoryLog[]>([]);
+    const [history, setHistory] = useState<MongoHistoryLog[]>([]);
 
 
     const getCollection = (collection: string) => {
@@ -54,7 +57,7 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
 
     }, []);
 
-    const getHistoryLog = async () : Promise<HistoryLog[]> => {
+    const getHistoryLog = async () : Promise<MongoHistoryLog[]> => {
         if (currentUser === null){
             throw 'could not retrieve history from database'
         }
@@ -63,43 +66,28 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         console.log(collection)
         const res  = await collection.find({user_id: currentUser.id});
 
-        let history: HistoryLog[] = [];
+        let history: MongoHistoryLog[] = [];
         for (let r of res) {
             console.log(r)
             history.push({
-                start: new Date(r.start).getUTCMilliseconds(),
-                end: new Date(r.end).getUTCMilliseconds(),
+                user_id: r.user_id,
+                start: r.start,
+                end: r.end,
                 wage: r.wage,
             })
         }
         return history
     }
-    const pushHistoryLog = async (log: HistoryLog): Promise<InsertOneResult<any>> => {
+    const pushHistoryLog = async (log: MongoHistoryLog): Promise<InsertOneResult<any>> => {
 
         if (currentUser === null) {
             throw 'could not push to database'
         }
 
-        type MongoHistoryLog = {
-            _id?: Realm.BSON.ObjectId;
-            end: Date;
-            start: Date;
-            user_id: string;
-        };
-
-
-        let mongoLog: MongoHistoryLog = {
-            start: new Date(log.start),
-            end: new Date(log.end),
-            user_id: currentUser.id,
-        }
-
-
-
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
         console.log(collection)
-        const res  = await collection.insertOne(mongoLog);
+        const res  = await collection.insertOne(log);
 
         if (res !== null) {
             setHistory([
