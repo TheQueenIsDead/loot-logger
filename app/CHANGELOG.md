@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://github.com/TheQueenIsDead/loot-logger/compare/app-v1.0.0...app-v1.1.0) (2024-05-03)
+
+
+### Features
+
+* load history and parse into history log ([37984d9](https://github.com/TheQueenIsDead/loot-logger/commit/37984d97b7580eedaf484a69fbd15a0dd83a55cb))
+* provide user feedback on failed login / register ([eb575f6](https://github.com/TheQueenIsDead/loot-logger/commit/eb575f6c3771efdabb87c375f297707f88354a99))
+* working database persistence via mongodb realm ([3d3a4c7](https://github.com/TheQueenIsDead/loot-logger/commit/3d3a4c71fd7383800933bd627a940ea5276700c2))
+
 ## 1.0.0 (2024-04-25)
 
 
