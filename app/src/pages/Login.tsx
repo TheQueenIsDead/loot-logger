@@ -3,7 +3,7 @@ import {IonButton, IonInput, IonItem, IonLabel, useIonToast} from '@ionic/react'
 
 interface LoginProps {
     onLogin: (email: string, password: string) => Promise<Realm.User>;
-    onRegister: (email: string, password: string) => Promise<void>;
+    onRegister: (email: string, password: string) => Promise<Realm.User>;
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin, onRegister }) => {
