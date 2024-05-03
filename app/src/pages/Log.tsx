@@ -3,10 +3,12 @@ import {useEffect, useState} from "react";
 import { useStorage } from '../context/StorageContext';
 import Header from '../components/Header';
 import moment from 'moment';
+import {useRealm} from "../context/RealmContext";
 
 
 const Log: React.FC = () => {
 
+    const {currentUser} = useRealm();
     const { config, pushHistoryLog } = useStorage();
 
 
@@ -54,8 +56,13 @@ const Log: React.FC = () => {
     // TODO: Change this to only persist if the timer has started
     //  (It's possible to add 0 duration logs by clicking this)
     const handleReset = async () => {
+        if (currentUser === null) {
+            // TODO: Handle nicely.
+            return
+        }
         if (startTime) {
             pushHistoryLog({
+                user_id: currentUser.id,
                 start: startTime.toDate(),
                 end: moment(startTime).add(elapsedTime, 'milliseconds').toDate(),
                 wage: config.wage
