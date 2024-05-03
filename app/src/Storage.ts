@@ -1,5 +1,6 @@
 import {Storage} from "@ionic/storage";
 import {defaultConfig} from "./defaults";
+import {MongoHistoryLog} from "./models/models";
 
 export class StorageService {
 
@@ -52,8 +53,8 @@ export class StorageService {
         ])
     }
 
-    public async getHistory(): Promise<HistoryLog[]> {
-        let history: HistoryLog[] = []
+    public async getHistory(): Promise<MongoHistoryLog[]> {
+        let history: MongoHistoryLog[] = []
         const data = await this.database.get('history')
         if (data !== null) {
             history = JSON.parse(data)
@@ -61,12 +62,12 @@ export class StorageService {
         return history
     }
 
-    public async setHistory(history: HistoryLog[]) {
+    public async setHistory(history: MongoHistoryLog[]) {
         const value = JSON.stringify(history)
         return this.database.set('history', value)
     }
 
-    public async pushHistory(history: HistoryLog) {
+    public async pushHistory(history: MongoHistoryLog) {
         const data = await this.getHistory()
         data.push(history)
         await this.setHistory(data)
