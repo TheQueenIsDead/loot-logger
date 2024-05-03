@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import * as Realm from 'realm-web';
+import {User} from "realm-web";
 
 const REALM_APP_ID = process.env.MONGO_REALM_APP_ID || ""; // Replace with your App ID
 const app = new Realm.App({ id: REALM_APP_ID });
@@ -7,16 +8,16 @@ const app = new Realm.App({ id: REALM_APP_ID });
 interface RealmContextType {
     app: Realm.App | null;
     currentUser: Realm.User | null;
-    login: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<Realm.User>;
+    register: (email: string, password: string) => Promise<Realm.User>;
     logout: () => Promise<void>;
 }
 
 const defaultAuthContext: RealmContextType = {
     app: null,
     currentUser: null,
-    login: async () => {},
-    register: async () => {},
+    login: async (): Promise<Realm.User> => { return new Promise<Realm.User>(() => {return null})},
+    register: async (): Promise<Realm.User> => { return new Promise<Realm.User>(() => {return null})},
     logout: async () => {}
 };
 
@@ -40,24 +41,18 @@ export const RealmProvider = ({ children }: { children: ReactNode }) => {
    
     async function login(email: string, password: string) {
         const credentials = Realm.Credentials.emailPassword(email, password);
-        console.log(credentials)
-        try {
-            const user = await app.logIn(credentials);
-            setCurrentUser(user);
-        } catch (error) {
-            console.error("Failed to log in", error);
-        }
+        return app.logIn(credentials)
     }
 
     async function register(email: string, password: string) {
+
+        // Try register the user with email/password credentials
         try {
-            // Register the user with email/password credentials
-            await app.emailPasswordAuth.registerUser({email, password});
+            await app.emailPasswordAuth.registerUser({email, password})
             // Automatically log in the user after registration
-            await login(email, password);
-        } catch (error) {
-            console.error("Failed to register", error);
-            throw error; // Rethrow the error for handling in the UI
+            return login(email, password)
+        } catch (err) {
+            throw err
         }
     }
 

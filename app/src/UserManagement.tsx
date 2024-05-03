@@ -11,21 +11,11 @@ const UserManagement: React.FC<{children: ReactNode}> = ({ children }) => {
 
     // Define functions for login and logout
     const handleLogin = async (email: string, password: string) => {
-        try {
-            await login(email, password);
-        } catch (error) {
-            console.error("Failed to log in:", error);
-            // Handle login failure (e.g., show error message)
-        }
+        return login(email, password);
     };
 
     const handleRegister= async (email: string, password: string) => {
-        try {
-            await register(email, password);
-        } catch (error) {
-            console.error("Failed to register in:", error);
-            // Handle login failure (e.g., show error message)
-        }
+        return register(email, password);
     };
 
 
