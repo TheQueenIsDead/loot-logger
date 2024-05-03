@@ -21,7 +21,7 @@ const History: React.FC = () => {
     const formatTime = (time: Date): string => {
         const date = new Date(time)
 
-        return moment(time).toISOString()
+        return moment(time).format("YYYY-MM-DD h:m:s a ")
         // return date.toLocaleTimeString()
     }
 
