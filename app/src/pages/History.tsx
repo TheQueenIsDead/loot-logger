@@ -1,18 +1,9 @@
-import {
-    IonButton,
-    IonContent,
-    IonHeader,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonPage,
-    IonTitle,
-    IonToolbar
-} from '@ionic/react';
+import {IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import React from "react";
-import { useStorage } from '../context/StorageContext';
+import {useStorage} from '../context/StorageContext';
 import Header from '../components/Header';
 import moment from "moment";
+import {MongoHistoryLog} from "../models/models";
 
 const History: React.FC = () => {
 
@@ -23,6 +14,19 @@ const History: React.FC = () => {
 
         return moment(time).format("YYYY-MM-DD h:m:s a ")
         // return date.toLocaleTimeString()
+    }
+
+    const timeDiffMilliseconds = (start: Date, end: Date): number => {
+        return moment(end).diff(moment(start), 'milliseconds')
+
+    }
+    const formatTimeDiff = (start: Date, end: Date): string => {
+        const diff = timeDiffMilliseconds(start, end)
+        return (diff / 1000).toFixed(2)
+    }
+
+    const calculateEarned = (log: MongoHistoryLog): number => {
+        return (((timeDiffMilliseconds(log.start, log.end)) / 1000) * (log.wage / 60 / 60))
     }
 
     return (
@@ -50,11 +54,11 @@ const History: React.FC = () => {
                         <IonItem key={index}>
                             <IonLabel>{formatTime(item.start)}</IonLabel>
                             <IonLabel>{formatTime(item.end)}</IonLabel>
-                            <IonLabel>{(item.end - item.start) / 1000} seconds</IonLabel>
+                            <IonLabel>{formatTimeDiff(item.start, item.end)} seconds</IonLabel>
                             {item.wage != null ? (
                                 <IonLabel>${item.wage.toFixed(2)} per hour</IonLabel>
                             ) : (<IonLabel>Wage information missing</IonLabel>)}                            
-                            <IonLabel>${(((item.end - item.start) / 1000) * (item.wage / 60 / 60)).toFixed(2)}</IonLabel>
+                            <IonLabel>${calculateEarned(item).toFixed(2)}</IonLabel>
                         </IonItem>
                     ))
                 ) : (
