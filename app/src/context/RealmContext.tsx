@@ -4,27 +4,29 @@ import * as Realm from 'realm-web';
 const REALM_APP_ID = process.env.MONGO_REALM_APP_ID || ""; // Replace with your App ID
 const app = new Realm.App({ id: REALM_APP_ID });
 
-interface AuthContextType {
+interface RealmContextType {
+    app: Realm.App | null;
     currentUser: Realm.User | null;
     login: (email: string, password: string) => Promise<void>;
     register: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
 }
 
-const defaultAuthContext: AuthContextType = {
+const defaultAuthContext: RealmContextType = {
+    app: null,
     currentUser: null,
     login: async () => {},
     register: async () => {},
     logout: async () => {}
 };
 
-const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+const RealmContext = createContext<RealmContextType>(defaultAuthContext);
 
-export function useAuth() {
-    return useContext(AuthContext);
+export function useRealm() {
+    return useContext(RealmContext);
 }
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const RealmProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<Realm.User | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -71,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const value = {
+        app,
         currentUser,
         login,
         register,
@@ -78,8 +81,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={value}>
+        <RealmContext.Provider value={value}>
             {!loading && children}
-        </AuthContext.Provider>
+        </RealmContext.Provider>
     );
 };

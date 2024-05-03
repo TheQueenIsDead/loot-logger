@@ -1,13 +1,13 @@
 import React from 'react';
 import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton } from '@ionic/react';
-import { useAuth } from '../context/AuthContext';
+import { useRealm } from '../context/RealmContext';
 
 interface HeaderProps {
     title: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
-    const { logout } = useAuth();
+    const { logout } = useRealm();
 
     const handleLogout = async () => {
         try {

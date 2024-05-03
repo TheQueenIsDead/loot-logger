@@ -2,23 +2,27 @@ import {IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@
 import {useEffect, useState} from "react";
 import { useStorage } from '../context/StorageContext';
 import Header from '../components/Header';
+import moment from 'moment';
+import {useRealm} from "../context/RealmContext";
 
 
 const Log: React.FC = () => {
 
+    const {currentUser} = useRealm();
     const { config, pushHistoryLog } = useStorage();
 
-    const [startTime, setStartTime] = useState<number>(0);
+
+    const [startTime, setStartTime] = useState<moment.Moment | null>(null);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
     const [moneyEarned, setMoneyEarned] = useState<number>(0);
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
-
     useEffect(() => {
-        if (startTime !== 0) {
+        if (startTime) {
             const id = setInterval(() => {
-                setElapsedTime(Date.now() - startTime);
-                setMoneyEarned(calculateMoneyEarned(Date.now() - startTime))
+                const now = moment();
+                setElapsedTime(now.diff(startTime));
+                setMoneyEarned(calculateMoneyEarned(now.diff(startTime)));
             }, 1); // Update every millisecond
 
             setTimerId(id);
@@ -41,9 +45,8 @@ const Log: React.FC = () => {
     }
 
     const handleStart = () => {
-        setStartTime(Date.now());
-    };
-
+        setStartTime(moment());
+    }
     const handleStop = () => {
         if (timerId) {
             clearInterval(timerId);
@@ -53,15 +56,22 @@ const Log: React.FC = () => {
     // TODO: Change this to only persist if the timer has started
     //  (It's possible to add 0 duration logs by clicking this)
     const handleReset = async () => {
-        pushHistoryLog({
-            start: startTime,
-            end: startTime + elapsedTime,
-            wage: config.wage
-        })
+        if (currentUser === null) {
+            // TODO: Handle nicely.
+            return
+        }
+        if (startTime) {
+            pushHistoryLog({
+                user_id: currentUser.id,
+                start: startTime.toDate(),
+                end: moment(startTime).add(elapsedTime, 'milliseconds').toDate(),
+                wage: config.wage
+            });
+        }
 
-        setStartTime(0);
+        setStartTime(null);
         setElapsedTime(0);
-        setMoneyEarned(0)
+        setMoneyEarned(0);
         if (timerId) {
             clearInterval(timerId);
         }
@@ -83,7 +93,7 @@ const Log: React.FC = () => {
                 <div style={{textAlign: 'center'}}>
                     <h2>{formatTime(elapsedTime)} seconds</h2>
                     <h2>${moneyEarned.toFixed(2)} earned @ ${config.wage.toFixed(2)}/ph</h2>
-                    {startTime === 0 ? (
+                    {startTime === null ? (
                         <IonButton onClick={handleStart}>Start</IonButton>
                     ) : (
                         <IonButton onClick={handleStop}>Stop</IonButton>
