@@ -31,7 +31,6 @@
     "react-dom": "^18.2.0",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
-    "realm": "^12.7.1",
     "realm-web": "^2.0.0"
   },
   "devDependencies": {
