@@ -34,8 +34,9 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { StorageProvider } from './context/StorageContext';
-import { AuthProvider } from './context/AuthContext';
+import { RealmProvider } from './context/RealmContext';
 import UserManagement from './UserManagement';
+import React from "react";
 
 setupIonicReact();
 
@@ -43,8 +44,8 @@ setupIonicReact();
 const App: React.FC = () => {
   return (
   <IonApp>
+    <RealmProvider>
     <StorageProvider>
-      <AuthProvider>
         <UserManagement>
           <IonReactRouter>
             <IonTabs>
@@ -79,8 +80,8 @@ const App: React.FC = () => {
             </IonTabs>
           </IonReactRouter>
         </UserManagement>
-      </AuthProvider>
-    </StorageProvider>
+      </StorageProvider>
+      </RealmProvider>
   </IonApp>
   )
 };

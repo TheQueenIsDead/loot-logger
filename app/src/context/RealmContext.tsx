@@ -1,30 +1,33 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import * as Realm from 'realm-web';
+import {User} from "realm-web";
 
-const REALM_APP_ID = "application-0-vyzlwzl"; // Replace with your App ID
+const REALM_APP_ID = process.env.MONGO_REALM_APP_ID || ""; // Replace with your App ID
 const app = new Realm.App({ id: REALM_APP_ID });
 
-interface AuthContextType {
+interface RealmContextType {
+    app: Realm.App | null;
     currentUser: Realm.User | null;
-    login: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<Realm.User>;
+    register: (email: string, password: string) => Promise<Realm.User>;
     logout: () => Promise<void>;
 }
 
-const defaultAuthContext: AuthContextType = {
+const defaultAuthContext: RealmContextType = {
+    app: null,
     currentUser: null,
-    login: async () => {},
-    register: async () => {},
+    login: async (): Promise<Realm.User> => { return new Promise<Realm.User>(() => {return null})},
+    register: async (): Promise<Realm.User> => { return new Promise<Realm.User>(() => {return null})},
     logout: async () => {}
 };
 
-const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+const RealmContext = createContext<RealmContextType>(defaultAuthContext);
 
-export function useAuth() {
-    return useContext(AuthContext);
+export function useRealm() {
+    return useContext(RealmContext);
 }
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const RealmProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<Realm.User | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -38,24 +41,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    
     async function login(email: string, password: string) {
         const credentials = Realm.Credentials.emailPassword(email, password);
-        console.log(credentials)
-        try {
-            const user = await app.logIn(credentials);
-            setCurrentUser(user);
-        } catch (error) {
-            console.error("Failed to log in", error);
-        }
+        return app.logIn(credentials)
     }
 
     async function register(email: string, password: string) {
+
+        // Try register the user with email/password credentials
         try {
-            // Register the user with email/password credentials
-            await app.emailPasswordAuth.registerUser({email, password});
+            await app.emailPasswordAuth.registerUser({email, password})
             // Automatically log in the user after registration
-            await login(email, password);
-        } catch (error) {
-            console.error("Failed to register", error);
-            throw error; // Rethrow the error for handling in the UI
+            return login(email, password)
+        } catch (err) {
+            throw err
         }
     }
 
@@ -71,6 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const value = {
+        app,
         currentUser,
         login,
         register,
@@ -78,8 +76,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={value}>
+        <RealmContext.Provider value={value}>
             {!loading && children}
-        </AuthContext.Provider>
+        </RealmContext.Provider>
     );
 };

@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'app',
+  appId: 'dev.tqid.lootlogger',
+  appName: 'LootLogger',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
