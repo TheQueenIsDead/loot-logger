@@ -41,7 +41,11 @@ export const RealmProvider = ({ children }: { children: ReactNode }) => {
    
     async function login(email: string, password: string) {
         const credentials = Realm.Credentials.emailPassword(email, password);
-        return app.logIn(credentials)
+        const user = await app.logIn(credentials)
+        if (user !== null) {
+            setCurrentUser(user)
+        }
+        return user
     }
 
     async function register(email: string, password: string) {
