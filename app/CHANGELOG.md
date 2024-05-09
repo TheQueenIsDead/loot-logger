@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/TheQueenIsDead/loot-logger/compare/app-v1.1.0...app-v1.1.1) (2024-05-09)
+
+
+### Bug Fixes
+
+* on successful login, set the current user in the realm context ([12aaa6e](https://github.com/TheQueenIsDead/loot-logger/commit/12aaa6e032a08066b4adaf594a6c886960869732))
+
 ## [1.1.0](https://github.com/TheQueenIsDead/loot-logger/compare/app-v1.0.0...app-v1.1.0) (2024-05-03)
 
 
