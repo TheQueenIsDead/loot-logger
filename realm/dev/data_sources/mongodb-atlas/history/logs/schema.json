@@ -4,7 +4,7 @@
         "start": {
             "bsonType": "date"
         },
-        "user_id": {
+        "owner_id": {
             "bsonType": "string"
         },
         "end": {
@@ -16,7 +16,7 @@
     },
     "required": [
         "start",
-        "user_id",
+        "owner_id",
         "end"
     ]
 }
