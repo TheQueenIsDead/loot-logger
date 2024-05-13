@@ -1,0 +1,10 @@
+[
+    {
+        "name": "NewUserWebhook",
+        "private": true
+    },
+    {
+        "name": "resetFunc",
+        "private": true
+    }
+]
