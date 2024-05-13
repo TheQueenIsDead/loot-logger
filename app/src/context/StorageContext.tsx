@@ -55,13 +55,13 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
         console.log(collection)
-        const res  = await collection.find({user_id: currentUser.id});
+        const res  = await collection.find({owner_id: currentUser.id});
 
         let history: MongoHistoryLog[] = [];
         for (let r of res) {
             console.log(r)
             history.push({
-                user_id: r.user_id,
+                owner_id: r.owner_id,
                 start: r.start,
                 end: r.end,
                 wage: r.wage,

@@ -62,7 +62,7 @@ const Log: React.FC = () => {
         }
         if (startTime) {
             pushHistoryLog({
-                user_id: currentUser.id,
+                owner_id: currentUser.id,
                 start: startTime.toDate(),
                 end: moment(startTime).add(elapsedTime, 'milliseconds').toDate(),
                 wage: config.wage
