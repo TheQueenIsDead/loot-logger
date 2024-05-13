@@ -10,7 +10,7 @@ const History: React.FC = () => {
     const { history } = useStorage();
 
     const formatTime = (time: Date): string => {
-        return moment(time).format("YYYY-MM-DD h:m:s a ")
+        return moment(time).format("YYYY-MM-DD h:ma ")
     }
 
     const timeDiffMilliseconds = (start: Date, end: Date): number => {
@@ -19,7 +19,11 @@ const History: React.FC = () => {
     }
     const formatTimeDiff = (start: Date, end: Date): string => {
         const diff = timeDiffMilliseconds(start, end)
-        return (diff / 1000).toFixed(2)
+
+        if (diff / 1000 >= 60) {
+            return moment.utc(diff).format("m[m] ss[s]")
+        }
+        return moment.utc(diff).format("s[s]")
     }
 
     const calculateEarned = (log: MongoHistoryLog): number => {
@@ -40,7 +44,6 @@ const History: React.FC = () => {
                 <IonList>
                     <IonItem>
                         <IonLabel>Start</IonLabel>
-                        <IonLabel>End</IonLabel>
                         <IonLabel>Duration</IonLabel>
                         <IonLabel>Wage ($/hour)</IonLabel>
                         <IonLabel>Earned</IonLabel>
@@ -50,8 +53,7 @@ const History: React.FC = () => {
                     history.map((item, index) => (
                         <IonItem key={index}>
                             <IonLabel>{formatTime(item.start)}</IonLabel>
-                            <IonLabel>{formatTime(item.end)}</IonLabel>
-                            <IonLabel>{formatTimeDiff(item.start, item.end)} seconds</IonLabel>
+                            <IonLabel>{formatTimeDiff(item.start, item.end)}</IonLabel>
                             {item.wage != null ? (
                                 <IonLabel>${item.wage.toFixed(2)} per hour</IonLabel>
                             ) : (<IonLabel>Wage information missing</IonLabel>)}                            
