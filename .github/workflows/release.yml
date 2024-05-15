@@ -23,7 +23,7 @@ jobs:
   build-android:
     needs: [ release ]
     # No longer a bool since v3: https://github.com/googleapis/release-please-action/issues/912
-    if: ${{ steps.release.outputs.releases_created == 'true' }}
+    if: ${{ needs.release.outputs.releases_created == 'true' }}
     uses: ./.github/workflows/android.yml
     with:
       tag: ${{ needs.release.outputs.tag_name }}
