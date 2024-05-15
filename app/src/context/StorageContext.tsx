@@ -68,7 +68,6 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         }
         return history
     }
-    // const pushHistoryLog = async (log: MongoHistoryLog): Promise<InsertOneResult<any>> => {
     const pushHistoryLog = async (log: MongoHistoryLog): Promise<globalThis.Realm.Services.MongoDB.InsertOneResult<any>> => {
 
         if (currentUser === null) {
