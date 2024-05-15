@@ -10,7 +10,7 @@ const History: React.FC = () => {
     const { history } = useStorage();
 
     const formatTime = (time: Date): string => {
-        return moment(time).format("YYYY-MM-DD h:ma ")
+        return moment(time).format("YYYY-MM-DD h:mma ")
     }
 
     const timeDiffMilliseconds = (start: Date, end: Date): number => {
@@ -20,10 +20,15 @@ const History: React.FC = () => {
     const formatTimeDiff = (start: Date, end: Date): string => {
         const diff = timeDiffMilliseconds(start, end)
 
-        if (diff / 1000 >= 60) {
-            return moment.utc(diff).format("m[m] ss[s]")
+        // Default - Post 1m
+        let format = "m[m] ss[s]"
+
+        // Sub-minute
+        if (diff <= 60000) {
+            format = "s.SS[s]"
         }
-        return moment.utc(diff).format("s[s]")
+
+        return moment.utc(diff).format(format)
     }
 
     const calculateEarned = (log: MongoHistoryLog): number => {
