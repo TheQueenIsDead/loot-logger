@@ -6,7 +6,6 @@ import { MongoHistoryLog } from '../models/models'
 
 import * as Realm from "realm-web";
 // @ts-ignore
-import InsertOneResult = Realm.Services.MongoDB.InsertOneResult;
 const {
     BSON: { ObjectId },
 } = Realm;
@@ -14,8 +13,9 @@ const {
 interface StorageContextType {
     config: Config;
     history: MongoHistoryLog[];
-    pushHistoryLog: (log: MongoHistoryLog) => Promise<InsertOneResult<any>>;
+    pushHistoryLog: (log: MongoHistoryLog) => Promise<globalThis.Realm.Services.MongoDB.InsertOneResult<any>>;
     saveConfig: (config: Config) => Promise<void>;
+    deleteHistoryLog: (log: MongoHistoryLog) => Promise<globalThis.Realm.Services.MongoDB.DeleteResult>;
 }
 
 const defaultContextValue: StorageContextType = {
@@ -25,8 +25,9 @@ const defaultContextValue: StorageContextType = {
         wage: 0,
     }, // Assuming an empty object can be a default state
     history: [],
-    pushHistoryLog: async (): Promise<InsertOneResult<any>> => { return new Promise(() => {})},
-    saveConfig: async () => {}
+    pushHistoryLog: async (): Promise<globalThis.Realm.Services.MongoDB.InsertOneResult<any>> => { return new Promise(() => {})},
+    saveConfig: async () => {},
+    deleteHistoryLog: async (): Promise<globalThis.Realm.Services.MongoDB.DeleteResult> => { return new Promise(() => {})}
 };
 
 const StorageContext = createContext<StorageContextType>(defaultContextValue);
@@ -54,12 +55,10 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         }
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
-        console.log(collection)
         const res  = await collection.find({owner_id: currentUser.id});
 
         let history: MongoHistoryLog[] = [];
         for (let r of res) {
-            console.log(r)
             history.push({
                 owner_id: r.owner_id,
                 start: r.start,
@@ -69,7 +68,7 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         }
         return history
     }
-    const pushHistoryLog = async (log: MongoHistoryLog): Promise<InsertOneResult<any>> => {
+    const pushHistoryLog = async (log: MongoHistoryLog): Promise<globalThis.Realm.Services.MongoDB.InsertOneResult<any>> => {
 
         if (currentUser === null) {
             throw 'could not push to database'
@@ -77,7 +76,6 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
 
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
-        console.log(collection)
         const res  = await collection.insertOne(log);
 
         if (res !== null) {
@@ -87,7 +85,27 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
             ])
         }
 
+        return res
+    };
+    const deleteHistoryLog = async (log: MongoHistoryLog): Promise<any> => {
+
+        if (currentUser === null) {
+            throw 'could not push to database'
+        }
+
+        const mongo = currentUser.mongoClient('mongodb-atlas');
+        const collection = mongo.db('history').collection('logs');
+
+        const res = await collection.deleteOne(log);
+
         console.log(res)
+
+        if (res.deletedCount > 0) {
+            let newHistory = [...history]
+            newHistory.splice(newHistory.indexOf(log), 1)
+            setHistory(newHistory)
+        }
+
         return res
     };
 
@@ -117,7 +135,7 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
     }, []);
 
     return (
-        <StorageContext.Provider value={{ config, history, pushHistoryLog, saveConfig }}>
+        <StorageContext.Provider value={{ config, history, pushHistoryLog, saveConfig, deleteHistoryLog}}>
             {children}
         </StorageContext.Provider>
     );
