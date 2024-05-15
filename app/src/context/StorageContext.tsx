@@ -16,6 +16,7 @@ interface StorageContextType {
     history: MongoHistoryLog[];
     pushHistoryLog: (log: MongoHistoryLog) => Promise<InsertOneResult<any>>;
     saveConfig: (config: Config) => Promise<void>;
+    deleteHistoryLog: (log: MongoHistoryLog) => Promise<any>;
 }
 
 const defaultContextValue: StorageContextType = {
@@ -26,7 +27,8 @@ const defaultContextValue: StorageContextType = {
     }, // Assuming an empty object can be a default state
     history: [],
     pushHistoryLog: async (): Promise<InsertOneResult<any>> => { return new Promise(() => {})},
-    saveConfig: async () => {}
+    saveConfig: async () => {},
+    deleteHistoryLog: async (): Promise<any> => { return new Promise(() => {})}
 };
 
 const StorageContext = createContext<StorageContextType>(defaultContextValue);
@@ -90,6 +92,26 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         console.log(res)
         return res
     };
+    const deleteHistoryLog = async (log: MongoHistoryLog): Promise<any> => {
+
+        if (currentUser === null) {
+            throw 'could not push to database'
+        }
+
+        const mongo = currentUser.mongoClient('mongodb-atlas');
+        const collection = mongo.db('history').collection('logs');
+        const res = await collection.deleteOne(log);
+
+        // if (res !== null) {
+        //     setHistory([
+        //         ...history,
+        //         log
+        //     ])
+        // }
+
+        console.log(res)
+        return res
+    };
 
     const saveConfig = async (config: Config) => {
         try {
@@ -117,7 +139,7 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
     }, []);
 
     return (
-        <StorageContext.Provider value={{ config, history, pushHistoryLog, saveConfig }}>
+        <StorageContext.Provider value={{ config, history, pushHistoryLog, saveConfig, deleteHistoryLog}}>
             {children}
         </StorageContext.Provider>
     );
