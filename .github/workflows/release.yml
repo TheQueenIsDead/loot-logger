@@ -17,12 +17,13 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       # Update the release branch version and changelog, or create a GitHub release if merged
-      - uses: google-github-actions/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         id: release
 
   build-android:
     needs: [ release ]
-    if: ${{ needs.release.outputs.releases_created }}
+    # No longer a bool since v3: https://github.com/googleapis/release-please-action/issues/912
+    if: ${{ steps.release.outputs.releases_created == 'true' }}
     uses: ./.github/workflows/android.yml
     with:
       tag: ${{ needs.release.outputs.tag_name }}
