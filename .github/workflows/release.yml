@@ -18,6 +18,12 @@ jobs:
         id: release
 
       - if: ${{ steps.release.outputs.releases_created }}
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+
+      - if: ${{ steps.release.outputs.releases_created }}
         uses: ./.github/workflows/android.yml
         with:
           tag: ${{ steps.release.outputs.tag_name }}
