@@ -47,16 +47,9 @@ const History: React.FC = () => {
 
         console.log("deleting " + JSON.stringify(log))
 
+        const index = history.indexOf(log)
         const res = await deleteHistoryLog(log)
-        console.log(res)
 
-        // Create a new array without the item to be deleted
-        // const updatedHistory = [...history];
-
-        // updatedHistory.splice(index, 1);
-        // Update the state with the new array
-        // deleteHistory(updatedHistory);
-        // history.
     };
 
     return (

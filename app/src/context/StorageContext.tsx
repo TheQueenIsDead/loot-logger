@@ -7,6 +7,7 @@ import { MongoHistoryLog } from '../models/models'
 import * as Realm from "realm-web";
 // @ts-ignore
 import InsertOneResult = Realm.Services.MongoDB.InsertOneResult;
+import DeleteResult = Realm.Services.MongoDB.DeleteResult;
 const {
     BSON: { ObjectId },
 } = Realm;
@@ -16,7 +17,7 @@ interface StorageContextType {
     history: MongoHistoryLog[];
     pushHistoryLog: (log: MongoHistoryLog) => Promise<InsertOneResult<any>>;
     saveConfig: (config: Config) => Promise<void>;
-    deleteHistoryLog: (log: MongoHistoryLog) => Promise<any>;
+    deleteHistoryLog: (log: MongoHistoryLog) => Promise<DeleteResult>;
 }
 
 const defaultContextValue: StorageContextType = {
@@ -28,7 +29,7 @@ const defaultContextValue: StorageContextType = {
     history: [],
     pushHistoryLog: async (): Promise<InsertOneResult<any>> => { return new Promise(() => {})},
     saveConfig: async () => {},
-    deleteHistoryLog: async (): Promise<any> => { return new Promise(() => {})}
+    deleteHistoryLog: async (): Promise<DeleteResult> => { return new Promise(() => {})}
 };
 
 const StorageContext = createContext<StorageContextType>(defaultContextValue);
@@ -56,12 +57,10 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         }
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
-        console.log(collection)
         const res  = await collection.find({owner_id: currentUser.id});
 
         let history: MongoHistoryLog[] = [];
         for (let r of res) {
-            console.log(r)
             history.push({
                 owner_id: r.owner_id,
                 start: r.start,
@@ -79,7 +78,6 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
 
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
-        console.log(collection)
         const res  = await collection.insertOne(log);
 
         if (res !== null) {
@@ -89,7 +87,6 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
             ])
         }
 
-        console.log(res)
         return res
     };
     const deleteHistoryLog = async (log: MongoHistoryLog): Promise<any> => {
@@ -100,16 +97,17 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
 
         const mongo = currentUser.mongoClient('mongodb-atlas');
         const collection = mongo.db('history').collection('logs');
+
         const res = await collection.deleteOne(log);
 
-        // if (res !== null) {
-        //     setHistory([
-        //         ...history,
-        //         log
-        //     ])
-        // }
-
         console.log(res)
+
+        if (res.deletedCount > 0) {
+            let newHistory = [...history]
+            newHistory.splice(newHistory.indexOf(log), 1)
+            setHistory(newHistory)
+        }
+
         return res
     };
 
