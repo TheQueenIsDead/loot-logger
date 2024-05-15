@@ -1,13 +1,26 @@
-import {IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from '@ionic/react';
+
 import React from "react";
 import {useStorage} from '../context/StorageContext';
 import Header from '../components/Header';
 import moment from "moment";
 import {MongoHistoryLog} from "../models/models";
+import {closeCircle} from "ionicons/icons";
 
 const History: React.FC = () => {
 
-    const { history } = useStorage();
+    const { history, deleteHistoryLog } = useStorage();
 
     const formatTime = (time: Date): string => {
         return moment(time).format("YYYY-MM-DD h:mma ")
@@ -34,6 +47,15 @@ const History: React.FC = () => {
     const calculateEarned = (log: MongoHistoryLog): number => {
         return (((timeDiffMilliseconds(log.start, log.end)) / 1000) * (log.wage / 60 / 60))
     }
+
+    const handleDelete = async (log: MongoHistoryLog) => {
+
+        console.log("deleting " + JSON.stringify(log))
+
+        const index = history.indexOf(log)
+        const res = await deleteHistoryLog(log)
+
+    };
 
     return (
     <IonPage>
@@ -63,6 +85,9 @@ const History: React.FC = () => {
                                 <IonLabel>${item.wage.toFixed(2)} per hour</IonLabel>
                             ) : (<IonLabel>Wage information missing</IonLabel>)}                            
                             <IonLabel>${calculateEarned(item).toFixed(2)}</IonLabel>
+                            <IonButton slot="end" onClick={() => handleDelete(item)}>
+                                <IonIcon icon={closeCircle}/>
+                            </IonButton>
                         </IonItem>
                     ))
                 ) : (
