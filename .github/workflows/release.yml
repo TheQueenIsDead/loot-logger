@@ -10,7 +10,7 @@ permissions:
 name: Release
 
 jobs:
-  release-please:
+  release:
     runs-on: ubuntu-latest
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
