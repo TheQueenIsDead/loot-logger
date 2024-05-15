@@ -6,8 +6,6 @@ import { MongoHistoryLog } from '../models/models'
 
 import * as Realm from "realm-web";
 // @ts-ignore
-import InsertOneResult = Realm.Services.MongoDB.InsertOneResult;
-import DeleteResult = Realm.Services.MongoDB.DeleteResult;
 const {
     BSON: { ObjectId },
 } = Realm;
@@ -15,9 +13,9 @@ const {
 interface StorageContextType {
     config: Config;
     history: MongoHistoryLog[];
-    pushHistoryLog: (log: MongoHistoryLog) => Promise<InsertOneResult<any>>;
+    pushHistoryLog: (log: MongoHistoryLog) => Promise<globalThis.Realm.Services.MongoDB.InsertOneResult<any>>;
     saveConfig: (config: Config) => Promise<void>;
-    deleteHistoryLog: (log: MongoHistoryLog) => Promise<DeleteResult>;
+    deleteHistoryLog: (log: MongoHistoryLog) => Promise<globalThis.Realm.Services.MongoDB.DeleteResult>;
 }
 
 const defaultContextValue: StorageContextType = {
@@ -27,9 +25,9 @@ const defaultContextValue: StorageContextType = {
         wage: 0,
     }, // Assuming an empty object can be a default state
     history: [],
-    pushHistoryLog: async (): Promise<InsertOneResult<any>> => { return new Promise(() => {})},
+    pushHistoryLog: async (): Promise<globalThis.Realm.Services.MongoDB.InsertOneResult<any>> => { return new Promise(() => {})},
     saveConfig: async () => {},
-    deleteHistoryLog: async (): Promise<DeleteResult> => { return new Promise(() => {})}
+    deleteHistoryLog: async (): Promise<globalThis.Realm.Services.MongoDB.DeleteResult> => { return new Promise(() => {})}
 };
 
 const StorageContext = createContext<StorageContextType>(defaultContextValue);
@@ -70,7 +68,8 @@ export const StorageProvider: React.FC<{children: ReactNode}> = ({ children }) =
         }
         return history
     }
-    const pushHistoryLog = async (log: MongoHistoryLog): Promise<InsertOneResult<any>> => {
+    // const pushHistoryLog = async (log: MongoHistoryLog): Promise<InsertOneResult<any>> => {
+    const pushHistoryLog = async (log: MongoHistoryLog): Promise<globalThis.Realm.Services.MongoDB.InsertOneResult<any>> => {
 
         if (currentUser === null) {
             throw 'could not push to database'
