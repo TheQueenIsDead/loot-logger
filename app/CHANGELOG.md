@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/TheQueenIsDead/loot-logger/compare/app-v1.1.1...app-v1.2.0) (2024-09-29)
+
+
+### Features
+
+* cleanup history log display ([682f67b](https://github.com/TheQueenIsDead/loot-logger/commit/682f67bf454f638d5b8c9990f3e2c7110fe343ea))
+* implement the ability to remove history ([e196a43](https://github.com/TheQueenIsDead/loot-logger/commit/e196a43549c5999964e5a6f9516dacd517e3626d))
+* remove log from local history once deleted ([f4c5217](https://github.com/TheQueenIsDead/loot-logger/commit/f4c52172b1560ba0ccdae01bc54e219dfae4d4c4))
+
+
+### Bug Fixes
+
+* display two digits for minutes when m == 0-9, and format milliseconds in history log ([d4d0ae0](https://github.com/TheQueenIsDead/loot-logger/commit/d4d0ae044465a632881dbd1b11e4e7aa8c41bcf3))
+
 ## [1.1.1](https://github.com/TheQueenIsDead/loot-logger/compare/app-v1.1.0...app-v1.1.1) (2024-05-09)
 
 
